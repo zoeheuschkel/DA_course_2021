@@ -1,0 +1,49 @@
+---
+title: "Project Topic Chicken in Apple Plantations"
+author: "Zoe"
+date: "5/3/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Would German apple farmers include chicken into their plantation   
+## in order to deal with the programmed banning of certain  
+## agrochemicals – especially herbicides – in the coming years?
+
+### Some important elements of the decision  
+
+**Decision maker:** Apple farmer  
+**Problem:** Some frequently used agro-chemicals, especially herbicides will be banned soon.  
+**Options:**  
+_keep the system and adjust applications:_  
+    • apply other herbicides  
+    • apply mechanical weeding techniques  
+    • apply different ground covers  
+    • choose different rootstocks that are more competitive with weeds  
+    • adjust the irrigation scheme and do subsoil irrigation  
+    
+_change the system:_   
+    • convert to organic  
+    • convert to silvo-pastoral system including animals that feed on or scratch away the weed    
+
+**Decision: Shall the apple farmer include chicken in her plantation to suppress weed?** 
+
+### Allocation of Ressources  
+Keeping and changing the production system will generate additional costs for investments and additional labour hours. It needs to be decided if the option to include chicken – as long as a farmer really considers diversification into this direction- is beneficial to the entire production system **AND** the goal, a sufficient weed management, can be achieved.
+
+### Examples for uncertain values:  
+* weeding efficiency of chicken  
+* number of chicken to be included  
+* ability of staff to take care of the animals  
+* cost/benefit ratio of keeping chicken  
+* Damage done by chicken on the fruits     
+
+There are also some other potential risks and benefits as side effects that might have an impact on the actual outcome at the end.  
+
+[Here you can see the draft model](https://drive.google.com/file/d/1sL7UHkuIYzP4P2PKIZZ7hYle4tJidrN3/view?usp=sharing)
+
+
+
