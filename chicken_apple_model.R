@@ -1,5 +1,5 @@
-# Here we calculate costs and benefits of the inclusion of chicken into apple
-# plantations.
+# Here we calculate costs and benefits of the inclusion of chicken into apple####
+# plantations for the first year. ####
 
 library(decisionSupport)
 # Here we define input table, the legend file and create folders to store our results
@@ -18,9 +18,16 @@ dir.create(evpi_results_folder)
 #Here we start writing the function ####
 Chicken_Apple_Simulation<- function(){
 
-# Here we calculate all costs of including chicken into the plantation ####
-# First we calculate the costs of establishing the chicken
-cost_invest_chicken<-cost_coop+cost_animals+cost_fence
+# Here we calculate all costs####
+# We assume: One chicken coop with 1200 laying hens, conventional conditions
+# First we calculate all necessary single investments  
+# >for the coop
+cost_coop<-coop_invest+maintenance_costs_coop
+# >for the fence (we need 4 sqm per hen), we know that chicken only move away 
+# from the coop about 100m, so for the fence it is: 
+cost_fence<-fence_price*2*100+2*(number_hens*req_area/100)
+
+cost_invest_chicken<-cost_coop+cost_fence
 # Here we calculate the costs of taking care of the chicken
 cost_care_chicken<-cost_feed+cost_bedding+cost_veterinary+cost_registration
   +cost_labour+cost_composting+cost_diesel
