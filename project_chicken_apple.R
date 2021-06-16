@@ -9,6 +9,34 @@ mc_results_folder <- "mc_Results_chicken_apple"
 evpi_results_folder <- "evpi_Results_chicken_apple"
 
 # Here we make variables ####
+# these are our variables: n_years
+#number_hens
+#eegs_per_hen
+#egg_price
+#marketable_share
+#egg_time
+#revenue_hen
+#survival_rate
+#coop_invest
+#discount
+#interest_rate
+#maintenance_costs_coop
+#fence_price
+#req_area
+#cost_hen
+#feed_price
+#feed_need
+#other_needs_price
+#bedding_price
+#veterinary_price
+#cleaning_price
+#marketing_cost
+#cost_daily
+#cost_weekly
+#irregular_cost
+#hourly_wage
+
+
 make_variables <- function(est,n=1)
 { x <- random(rho=est, n=n)
 for(i in colnames(x)) assign(i, as.numeric(x[1,i]),envir = .GlobalEnv)}
@@ -22,21 +50,35 @@ Chicken_Apple_Simulation<- function(){
   # We assume: One chicken coop with 1200 laying hens, conventional conditions
   # First we calculate all necessary single investments  
   # >for the coop
-  cost_coop<-coop_invest+maintenance_costs_coop
+  cost_coop<-(coop_invest*number_hens)+vv(maintenance_costs_coop, var_CV, n=1)*number_hens
+  
   # >for the fence (we need 4 sqm per hen), we know that chicken only move away 
   # from the coop about 100m, so for the fence it is: 
   cost_fence<-fence_price*2*100+2*(number_hens*req_area/100)
   
-  cost_invest_chicken<-cost_coop+cost_fence
-  # Here we calculate the costs of taking care of the chicken
-  cost_care_chicken<-cost_feed+cost_bedding+cost_veterinary+cost_registration
-  +cost_labour+cost_composting+cost_diesel
+  cost_invest_chicken<-cost_coop+cost_fence+cost_hen*number_hens
+  
+  # Here we calculate the costs of taking care of the chicken####
+  #>for the feed
+  cost_feed<-feed_price*feed_need*number_hens
+  #>for the bedding
+  cost_bedding<-bedding_price*number_hens
+  #>for the daily routines
+  daily_cost<-cost_daily*number_hens
+  #>for the weekly routines
+  weekly_cost<-cost_weekly*number_hens
+  #>for the irregular events
+  #here we still need to include a function for irregular events
+  #Here we sum up the costs for chicken care####
+  cost_care_chicken<-cost_feed+cost_bedding+daily_cost+weekly_cost
+  
   #Here we calculate all risks of including chicken into the plantation
   #The cost of eachrisk can be calculated by cost of the event *probability of the event
-  cost_risks<-cost_risk_damage+cost_risk_pollution+cost_risk_diseasetransmission
-  +cost_risk_beneficialreduction+cost_risk_totalloss
+  # cost_risks<-cost_risk_damage+cost_risk_pollution+cost_risk_diseasetransmission
+  # +cost_risk_beneficialreduction+cost_risk_totalloss
+  
   # Here we add all costs ####
-  Costs<-cost_invest_chicken+cost_care_chicken+cost_risks
+  Costs<-cost_invest_chicken+cost_care_chicken #+cost_risks
   
   # Here we calculate all benefits of including chicken into the plantation ####
   # First we calculate all direct benefits of selling eggs and meat
@@ -57,7 +99,7 @@ Chicken_Apple_Simulation<- function(){
 
 # To get a probabilistic overview we run a Monte Carlo Simulation ####
 
-Chicken_Apple_Simulation <- mcSimulation(estimate_read_csv("chicken_apple.csv"),
+Chicken_Apple_Simulation <- mcSimulation(estimate_read_csv("data_chicken_apple.csv"),
                                          model_function = Chicken_Apple_Simulation,
                                          numberOfModelRuns = 100,
                                          functionSyntax = "plainNames")
