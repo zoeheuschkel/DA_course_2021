@@ -48,9 +48,12 @@ Chicken_Apple_Simulation<- function(){
   
   # Here we calculate all costs####
   # We assume: One chicken coop with 1200 laying hens, conventional conditions
-  # First we calculate all necessary single investments  
+  
+  # First we calculate all necessary single investments####  
   # >for the coop
-  cost_coop<-(coop_invest*number_hens)+vv(maintenance_costs_coop, var_CV, n=1)*number_hens
+  cost_coop<-(coop_invest*number_hens)+
+              vv(maintenance_costs_coop, var_CV, n=1)*
+              number_hens
   
   # >for the fence (we need 4 sqm per hen), we know that chicken only move away 
   # from the coop about 100m, so for the fence it is: 
@@ -68,26 +71,36 @@ Chicken_Apple_Simulation<- function(){
   #>for the weekly routines
   weekly_cost<-cost_weekly*number_hens
   #>for the irregular events
-  #here we still need to include a function for irregular events
-  #Here we sum up the costs for chicken care####
-  cost_care_chicken<-cost_feed+cost_bedding+daily_cost+weekly_cost
+  # irregular_events<- we still need to include a function for irregular events ####
   
-  #Here we calculate all risks of including chicken into the plantation
-  #The cost of eachrisk can be calculated by cost of the event *probability of the event
+  #Here we sum up the costs for chicken care####
+  cost_care_chicken<-cost_feed+cost_bedding+daily_cost+weekly_cost #+irregular_events
+  
+  #Here we calculate all risks of including chicken into the plantation####
+  #The cost of each risk can be calculated by cost of the event *probability of the event
   # cost_risks<-cost_risk_damage+cost_risk_pollution+cost_risk_diseasetransmission
   # +cost_risk_beneficialreduction+cost_risk_totalloss
   
   # Here we add all costs ####
   Costs<-cost_invest_chicken+cost_care_chicken #+cost_risks
-  
+ 
   # Here we calculate all benefits of including chicken into the plantation ####
-  # First we calculate all direct benefits of selling eggs and meat
+  # >all direct benefits of selling eggs and meat
+  revenue_eggs<-egg_price*
+                vv(eggs_per_hen, var_CV, n=1)*
+                number_hens*
+                vv(marketable_share, var_CV, n=1)
+  revenue_meat<-revenue_hen*
+                vv(number_hens, var_CV, n=1)
+  
   benefit_direct<-revenue_eggs+revenue_meat
+  
   # Here we calculate all further benefits of including chicken into the plantation
-  benefit_indirect<-benefit_weedmanagement+benefit_reducedmowing
-  +benefit_volereduction+benefit_scabreduction+benefit_organicfertilizer
+  # benefit_indirect<-benefit_weedmanagement+benefit_reducedmowing
+  # +benefit_volereduction+benefit_scabreduction+benefit_organicfertilizer
+  
   #Here we add all benefits ####
-  Benefits<-benefit_direct+benefit_indirect
+  Benefits<-benefit_direct #+benefit_indirect
   
   # Here we calculate the result ####
   Result<-Benefits-Costs

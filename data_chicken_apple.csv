@@ -1,8 +1,9 @@
 General_variables ,unit,description,lower,median,upper,distribution,variable
 ,year,Time period for the calculation,12,,12,const,n_years
+,%,,0.05,,0.05,const,discount_rate
  ,% ,desired coefficient of variation in percent ,0.05,,0.15,tnorm_0_1 ,var_CV
 ,hen,number of hens,1180,,1200,posnorm,number_hens
-,egg / hen / laying period,laid eggs,260,,290,posnorm,eegs_per_hen
+,egg / hen / laying period,laid eggs,260,,290,posnorm,eggs_per_hen
 ,€,egg price,0.2,,0.45,posnorm,egg_price
 ,%,share of marketable eggs,0.78,,0.9,tnorm_0_1,marketable_share
 ,days,egg laying period,349,,351,posnorm,egg_time
