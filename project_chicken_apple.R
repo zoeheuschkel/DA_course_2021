@@ -9,34 +9,6 @@ mc_results_folder <- "mc_Results_chicken_apple"
 evpi_results_folder <- "evpi_Results_chicken_apple"
 
 # Here we make variables ####
-# these are our variables: n_years
-#number_hens
-#eegs_per_hen
-#egg_price
-#marketable_share
-#egg_time
-#revenue_hen
-#survival_rate
-#coop_invest
-#discount
-#interest_rate
-#maintenance_costs_coop
-#fence_price
-#req_area
-#cost_hen
-#feed_price
-#feed_need
-#other_needs_price
-#bedding_price
-#veterinary_price
-#cleaning_price
-#marketing_cost
-#cost_daily
-#cost_weekly
-#irregular_cost
-#hourly_wage
-
-
 make_variables <- function(est,n=1)
 { x <- random(rho=est, n=n)
 for(i in colnames(x)) assign(i, as.numeric(x[1,i]),envir = .GlobalEnv)}
@@ -67,14 +39,18 @@ Chicken_Apple_Simulation<- function(){
   #>for the bedding
   cost_bedding<-bedding_price*number_hens
   #>for the daily routines
-  daily_cost<-cost_daily*number_hens
+  daily_cost<-cost_daily*number_hens*hourly_wage
   #>for the weekly routines
-  weekly_cost<-cost_weekly*number_hens
+  weekly_cost<-cost_weekly*number_hens*hourly_wage
   #>for the irregular events
-  # irregular_events<- we still need to include a function for irregular events ####
+  costs_irregular_events<-irregular_cost*number_hens*hourly_wage
   
   #Here we sum up the costs for chicken care####
-  cost_care_chicken<-cost_feed+cost_bedding+daily_cost+weekly_cost #+irregular_events
+  cost_care_chicken<-cost_feed+
+                    cost_bedding+
+                    daily_cost+
+                    weekly_cost+ 
+                    costs_irregular_events
   
   #Here we calculate all risks of including chicken into the plantation####
   #The cost of each risk can be calculated by cost of the event *probability of the event
@@ -82,7 +58,9 @@ Chicken_Apple_Simulation<- function(){
   # +cost_risk_beneficialreduction+cost_risk_totalloss
   
   # Here we add all costs ####
-  Costs<-cost_invest_chicken+cost_care_chicken #+cost_risks
+  Costs<-cost_invest_chicken+
+        cost_care_chicken 
+        #+cost_risks
  
   # Here we calculate all benefits of including chicken into the plantation ####
   # >all direct benefits of selling eggs and meat
@@ -96,8 +74,11 @@ Chicken_Apple_Simulation<- function(){
   benefit_direct<-revenue_eggs+revenue_meat
   
   # Here we calculate all further benefits of including chicken into the plantation
-  # benefit_indirect<-benefit_weedmanagement+benefit_reducedmowing
-  # +benefit_volereduction+benefit_scabreduction+benefit_organicfertilizer
+  # benefit_indirect<-benefit_weedmanagement+
+                      #benefit_reducedmowing+
+                      #benefit_volereduction+
+                      #benefit_scabreduction+
+                      #benefit_organicfertilizer
   
   #Here we add all benefits ####
   Benefits<-benefit_direct #+benefit_indirect
@@ -127,7 +108,7 @@ plot_cashflow(mcSimulation_object = Chicken_Apple_Simulation, cashflow_var_name 
 
 pls_result <- plsr.mcSimulation(object = Chicken_Apple_Simulation,
                                 resultName = names(Chicken_Apple_Simulation$y)[1], ncomp = 1)
-input_table <- read.csv("data_storage_energy.csv")
+input_table <- read.csv("data_chicken_apple.csv")
 
 plot_pls(pls_result, input_table = input_table, threshold = 0.5)
 
