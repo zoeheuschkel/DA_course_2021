@@ -35,7 +35,7 @@ Chicken_Apple_Simulation<- function(){
   
   # Here we calculate the costs of taking care of the chicken####
   #>for the feed
-  cost_feed<-feed_price*feed_need*number_hens
+  cost_feed<-feed_price*vv(feed_need, var_CV, n=1)*number_hens
   #>for the bedding
   cost_bedding<-bedding_price*number_hens
   #>for the daily routines
@@ -44,7 +44,9 @@ Chicken_Apple_Simulation<- function(){
   weekly_cost<-cost_weekly*number_hens*hourly_wage
   #>for the irregular events
   costs_irregular_events<-irregular_cost*number_hens*hourly_wage
-  
+  #>for the veterinary
+  #costs_vet<-regular_costs_vet+chance_event()  
+    
   #Here we sum up the costs for chicken care####
   cost_care_chicken<-cost_feed+
                     cost_bedding+
@@ -55,7 +57,7 @@ Chicken_Apple_Simulation<- function(){
   #Here we calculate all risks of including chicken into the plantation####
   #The cost of each risk can be calculated by cost of the event *probability of the event
   # cost_risks<-cost_risk_damage+cost_risk_pollution+cost_risk_diseasetransmission
-  # +cost_risk_beneficialreduction+cost_risk_totalloss
+  # +cost_risk_beneficialreduction
   
   # Here we add all costs ####
   Costs<-cost_invest_chicken+
@@ -87,9 +89,17 @@ Chicken_Apple_Simulation<- function(){
   Result<-Benefits-Costs
   
   
+  
   return(list(NPV = discount(Result, discount_rate, calculate_NPV = TRUE),
               Cashflow = Result))
 }
+
+#For avian flu we include a loop that would change costs and benefits for this single event.####
+
+
+
+
+
 
 # To get a probabilistic overview we run a Monte Carlo Simulation ####
 
