@@ -28,10 +28,10 @@ Chicken_Apple_Simulation<- function(){
               #number_hens)
   cost_coop_invest<-coop_invest*number_hens
   
-  cost_maintenance_coop<-vv(maintenance_coop, var_CV, n=1)*number_hens
+  cost_maintenance_coop<-vv(maintenance_coop, var_CV, n=n_years-1)*number_hens
   
   cost_coop<-c(cost_coop_invest,rep(0, n_years-1)+
-              rep(cost_maintenance_coop, n_years-1))
+              cost_maintenance_coop)
   
   
   # >for the fence (we need 4 sqm per hen), we know that chicken only move away 
@@ -173,3 +173,4 @@ write.csv(VIP_NPV, "VIP_NPV", row.names = FALSE)
 
 # Write EVPI results
 write.csv(evpi$NPV, "EVPI_NPV.csv", row.names = FALSE)
+
