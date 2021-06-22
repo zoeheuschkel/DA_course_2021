@@ -15,44 +15,62 @@ for(i in colnames(x)) assign(i, as.numeric(x[1,i]),envir = .GlobalEnv)}
 make_variables(estimate_read_csv(input_table))
 dir.create(evpi_results_folder)
 
+# We assume: One chicken coop with 1200 laying hens, conventional conditions
 #Here we start writing the function ####
 Chicken_Apple_Simulation<- function(){
   
   # Here we calculate all costs####
-  # We assume: One chicken coop with 1200 laying hens, conventional conditions
   
   # First we calculate all necessary single investments####  
   # >for the coop
-  cost_coop<-(coop_invest*number_hens)+
-              vv(maintenance_costs_coop, var_CV, n=1)*
-              number_hens
+  #cost_coop<-coop_invest*number_hens+
+              #(vv(maintenance_costs_coop, var_CV, n=12)*
+              #number_hens)
+  cost_coop_invest<-coop_invest*number_hens
+  
+  cost_maintenance_coop<-vv(maintenance_coop, var_CV, n=1)*number_hens
+  
+  cost_coop<-c(cost_coop_invest,rep(0, n_years-1)+
+              rep(cost_maintenance_coop, n_years-1))
+  
   
   # >for the fence (we need 4 sqm per hen), we know that chicken only move away 
   # from the coop about 100m, so for the fence it is: 
-  cost_fence<-fence_price*2*100+2*(number_hens*req_area/100)
+  cost_fence<-c(((fence_price*
+                  2*100+2*(number_hens*req_area/100)+
+                  battery_price)), 
+               rep(0,n_years-1))
   
-  cost_invest_chicken<-cost_coop+cost_fence+cost_hen*number_hens
+  cost_flock<-rep((cost_hen*number_hens), n_years)
+  
+  cost_invest_chicken<-cost_coop+cost_fence+cost_flock
   
   # Here we calculate the costs of taking care of the chicken####
   #>for the feed
-  cost_feed<-feed_price*vv(feed_need, var_CV, n=1)*number_hens
+  cost_feed<-feed_price*vv(feed_need*365, var_CV, n=n_years)*(number_hens*survival_rate)
   #>for the bedding
-  cost_bedding<-bedding_price*number_hens
+  cost_bedding<-rep((bedding_price*number_hens), n_years)
   #>for the daily routines
-  daily_cost<-cost_daily*number_hens*hourly_wage
+  daily_cost<-rep((cost_daily*number_hens*hourly_wage), n_years)
   #>for the weekly routines
-  weekly_cost<-cost_weekly*number_hens*hourly_wage
+  weekly_cost<-rep((cost_weekly*number_hens*hourly_wage) , n_years)
   #>for the irregular events
-  costs_irregular_events<-irregular_cost*number_hens*hourly_wage
+  costs_irregular_events<-rep((irregular_cost*number_hens*hourly_wage), n_years)
   #>for the veterinary
-  #costs_vet<-regular_costs_vet+chance_event()  
+  costs_vet<-cost_vet_visit+
+            costs_vaccin*number_hens+
+            chance_event(0.25,
+                         cost_vet_visit,
+                         0,
+                         n=12)  
     
   #Here we sum up the costs for chicken care####
   cost_care_chicken<-cost_feed+
                     cost_bedding+
                     daily_cost+
                     weekly_cost+ 
-                    costs_irregular_events
+                    costs_irregular_events+
+                    costs_vet
   
   #Here we calculate all risks of including chicken into the plantation####
   #The cost of each risk can be calculated by cost of the event *probability of the event
@@ -67,11 +85,14 @@ Chicken_Apple_Simulation<- function(){
   # Here we calculate all benefits of including chicken into the plantation ####
   # >all direct benefits of selling eggs and meat
   revenue_eggs<-egg_price*
-                vv(eggs_per_hen, var_CV, n=1)*
+                vv(eggs_per_hen, var_CV, n=n_years)*
                 number_hens*
-                vv(marketable_share, var_CV, n=1)
+                vv(survival_rate, var_CV, n=n_years)*
+                vv(marketable_share, var_CV, n=n_years)
   revenue_meat<-revenue_hen*
-                vv(number_hens, var_CV, n=1)
+                number_hens*
+                vv(survival_rate, var_CV, n=n_years)
+                
   
   benefit_direct<-revenue_eggs+revenue_meat
   

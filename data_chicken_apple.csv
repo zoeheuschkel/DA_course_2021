@@ -1,32 +1,32 @@
 General_variables ,unit,description,lower,median,upper,distribution,variable
-,year,Time period for the calculation,12,,12,const,n_years
+,€,price of mobile battery for the fence,80,,130,posnorm,battery_price
+,€ / hen,bedding,0.9,,1.1,posnorm,bedding_price
+,€ / hen,cleaning costs (including labour),0.39,,0.41,posnorm,cleaning_price
+,€ / hen,investment cost portable hen pen,17,,19,posnorm,coop_invest
+,h / hen ,daily tasks,0.9,,1.1,posnorm,cost_daily
+,€ / hen,young hen,8,,10,posnorm,cost_hen
+,€,Costs visiting veterinary,440,,560,posnorm,cost_vet_visit
+,h / hen ,"periodically costs (cleaning, moving the pen…)",0.49,,0.51,posnorm,cost_weekly
+,€ / hen,Costs vaccination,0.03,,0.09,posnorm,costs_vaccin
+,€ / hen,depreciating after 12 years,11.95,,11.97,posnorm,discount
 ,%,discount rate,0.05,,0.05,const,discount_rate
- ,% ,desired coefficient of variation in percent ,0.05,,0.1,tnorm_0_1 ,var_CV
-,hen,number of hens,1180,,1200,posnorm,number_hens
-,egg / hen / laying period,laid eggs,270,,290,posnorm,eggs_per_hen
 ,€,egg price,0.2,,0.36,posnorm,egg_price
-,%,share of marketable eggs,0.78,,0.82,tnorm_0_1,marketable_share
 ,days,egg laying period,349,,351,posnorm,egg_time
+,egg / hen / laying period,laid eggs,270,,290,posnorm,eggs_per_hen
+,kg / hen / day,feed consumption,0.17,,0.19,posnorm,feed_need
+,€ / kg,feed price,0.28,,0.36,posnorm,feed_price
+,€ / m,price of electric mobile fence,4,,6,posnorm,fence_price
+,€ / h,Costs hourly wage (including employers costs),12.36,,12.7,posnorm,hourly_wage
+,€ / hen,interest rate costs (4%),3.18,,3.2,posnorm,interest_rate
+,h / hen ,"irregular tasks (calling vet, …)",1.49,,1.51,posnorm,irregular_cost
+,€ / hen ,maintenance costs coop,2.5,,3.2,posnorm,maintenance_coop
+,%,share of marketable eggs,0.78,,0.82,tnorm_0_1,marketable_share
+,€ / hen,marketing costs,0.9,,1.1,posnorm,marketing_cost
+,year,Time period for the calculation,12,,12,const,n_years
+,hen,number of hens,1180,,1200,posnorm,number_hens
+,€ / hen,"energy, water",0.59,,0.61,posnorm,other_needs_price
+,sqm /  hen,required running area,4,,5,posnorm,req_area
 ,€,revenue for slaughtered hen,0.5,,1.5,posnorm,revenue_hen
 ,%,survival rate' of chicken for egg laying period,0.8,,0.97,tnorm_0_1,survival_rate
-,€ / hen,investment cost portable hen pen,17,,19,posnorm,coop_invest
-,€ / hen,depreciating after 12 years,11.95,,11.97,posnorm,discount
-,€ / hen,interest rate costs (4%),3.18,,3.2,posnorm,interest_rate
-,€ / hen ,maintenance costs coop,2.5,,3.2,posnorm,maintenance_costs_coop
-,€ / m,price of electric mobile fence,4,,6,posnorm,fence_price
-,€,price of mobile battery for the fence,80,,130,posnorm,battery_price
-,sqm /  hen,required running area,4,,5,posnorm,req_area
-,€ / hen,young hen,8,,10,posnorm,cost_hen
-,€ / kg,feed price,0.54,,0.56,posnorm,feed_price
-,kg / hen / day,feed consumption,0.17,,0.2,posnorm,feed_need
-,€ / hen,"energy, water",0.59,,0.61,posnorm,other_needs_price
-,€ / hen,bedding,0.9,,1.1,posnorm,bedding_price
+ ,% ,desired coefficient of variation in percent ,0.05,,0.1,tnorm_0_1 ,var_CV
 ,€ / hen,veterinarian costs,0.39,,0.41,posnorm,veterinary_price
-,€ / hen,cleaning costs (including labour),0.39,,0.41,posnorm,cleaning_price
-,€ / hen,marketing costs,0.9,,1.1,posnorm,marketing_cost
-,h / hen ,daily tasks,0.9,,1.1,posnorm,cost_daily
-,h / hen ,"periodically costs (cleaning, moving the pen…)",0.49,,0.51,posnorm,cost_weekly
-,h / hen ,"irregular tasks (calling vet, …)",1.49,,1.51,posnorm,irregular_cost
-,€ / h,Costs hourly wage (including employers costs),12.36,,12.7,posnorm,hourly_wage
-,€,Costs visiting veterinary,440,,560,posnorm,cost_vet_visit
-,€ / hen,Costs vaccination,0.03,,0.09,posnorm,costs_vaccin
