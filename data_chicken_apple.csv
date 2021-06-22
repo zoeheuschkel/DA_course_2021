@@ -18,7 +18,7 @@ General_variables ,unit,description,lower,median,upper,distribution,variable
 ,€ / m,price of electric mobile fence,4,,6,posnorm,fence_price
 ,€ / h,Costs hourly wage (including employers costs),12.36,,12.7,posnorm,hourly_wage
 ,€ / hen,interest rate costs (4%),3.18,,3.2,posnorm,interest_rate
-,h / hen ,"irregular tasks (calling vet, …)",1.49,,1.51,posnorm,irregular_cost
+,h / hen ,"irregular tasks (calling vet, …)",0.149,,0.151,posnorm,irregular_cost
 ,€ / hen ,maintenance costs coop,2.5,,3.2,posnorm,maintenance_coop
 ,%,share of marketable eggs,0.78,,0.82,tnorm_0_1,marketable_share
 ,€ / hen,marketing costs,0.9,,1.1,posnorm,marketing_cost
