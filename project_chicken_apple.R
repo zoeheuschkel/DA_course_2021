@@ -12,102 +12,212 @@ evpi_results_folder <- "evpi_Results_chicken_apple"
 make_variables <- function(est,n=1)
 { x <- random(rho=est, n=n)
 for(i in colnames(x)) assign(i, as.numeric(x[1,i]),envir = .GlobalEnv)}
+
 make_variables(estimate_read_csv(input_table))
+
 dir.create(evpi_results_folder)
 
 # We assume: One chicken coop with 1200 laying hens, conventional conditions
 #Here we start writing the function ####
 Chicken_Apple_Simulation<- function(){
   
-  # Here we calculate all costs####
+  #create time series for the variables
   
-  # First we calculate all necessary single investments####  
-  # >for the coop
-  #cost_coop<-coop_invest*number_hens+
-              #(vv(maintenance_costs_coop, var_CV, n=12)*
-              #number_hens)
-  cost_coop_invest<-coop_invest*number_hens
+  #Costs ----
   
-  cost_maintenance_coop<-vv(maintenance_coop, var_CV, n=n_years-1)*number_hens
+  cost_coop <- c(coop_invest * number_hens, rep(0, n = n_years -1))
   
-  cost_coop<-c(cost_coop_invest,rep(0, n_years-1)+
-              cost_maintenance_coop)
+  cost_maintenance_coop<-c(0,vv(maintenance_coop, var_CV, n=n_years-1)*number_hens)
+  
+  cost_coop <- cost_coop + cost_maintenance_coop
+  
+  cost_fence<-c(((fence_price * 2 * 100 + 2*(number_hens*req_area/100)+
+                    battery_price)), 
+                rep(0,n_years-1))
+  
+  cost_flock<-vv(cost_hen*number_hens, n = n_years, var_CV =  var_CV)
+  
+  #mavbe it makes more sense to assume that the price for chicken feed is variable instead of food consumption rate
+  #also right now we assume that we buy x amount of chicken and that they instantly die, dont eat and lay no eggs
+  #is there a way to let them die halfway through the year
+  #another point: shouldnt the chicken not be fed only for the time they lay eggs and get sold?
+  cost_feed<-vv(feed_price, var_CV = var_CV, n = n_years)*feed_need*365*(number_hens*survival_rate)
+  
+  #so some chickens die, they dont eat but still get bedding?
+  cost_bedding<-vv(bedding_price, var_CV = var_CV, n = n_years) *number_hens
+  
+  #calculation of daily, weekly and irregular tasks
+  daily_cost<-vv(cost_daily, var_CV = var_CV, n = n_years) * number_hens * hourly_wage
+  
+  #>for the weekly routines
+  weekly_cost<-vv(cost_weekly, var_CV = var_CV, n = n_years) * number_hens * hourly_wage
+  
+  costs_irregular_events<-vv(irregular_cost, var_CV = var_CV, n = n_years) * number_hens * hourly_wage
+  
+  #>for the veterinary
+  costs_vet<-cost_vet_visit+ costs_vaccin*number_hens+
+              chance_event(0.25, cost_vet_visit, 0, n=n_years)  
   
   
-  # >for the fence (we need 4 sqm per hen), we know that chicken only move away 
-  # from the coop about 100m, so for the fence it is: 
-  cost_fence<-c(((fence_price*
-                  2*100+2*(number_hens*req_area/100)+
-                  battery_price)), 
-               rep(0,n_years-1))
+  #revenues----
   
-  cost_flock<-rep((cost_hen*number_hens), n_years)
+  #same issue as above, the dead chicken die at the first day, that is a bit unrealistic
+  #added vv for price, because that is in my eyes the most volatile variable
+  revenue_eggs<-vv(egg_price, var_CV, n=n_years)*
+    vv(eggs_per_hen, var_CV, n=n_years)*
+    number_hens*
+    vv(survival_rate, var_CV, n=n_years)*
+    vv(marketable_share, var_CV, n=n_years)
+  revenue_meat<-vv(revenue_hen, var_CV, n=n_years)*
+    number_hens*
+    vv(survival_rate, var_CV, n=n_years)
+  
+  #indirect benefits
+  
+  
+  #modify the time series for avian influenca incidences
+  
+  occurence_influence_flock <- chance_event(risk_influenca_flock,n = n_years)
+  
+  #modify the costs and benefits in case of of avian influence
+  for(i in 1:n_years){
+    
+    if(occurence_influence_flock[i] == 1){
+      #if avian influenca happens in the flock all the chicken will be killed and 
+      #thus costs and beenfits are zero for this year, maybe costs for vet?
+      
+      #cost_maintenance_coop[i] <- 0
+      
+      #cost_feed[i] <- 0
+      
+      cost_bedding[i] <- 0
+      
+      daily_cost[i] <- 0
+      
+      weekly_cost[i] <- 0
+      
+      #here is the cost to organize vet etc included; so I guess this goes up
+      #maybe multiply with factor 1.5?
+      costs_irregular_events[i] <- costs_irregular_events[i] * 1.5
+      
+      revenue_eggs[i] <- 0
+      
+      revenue_meat[i] <- 0
+    }
+
+  }
+  
+  #add the different cost and benefit varioables up
   
   cost_invest_chicken<-cost_coop+cost_fence+cost_flock
   
-  # Here we calculate the costs of taking care of the chicken####
-  #>for the feed
-  cost_feed<-feed_price*vv(feed_need*365, var_CV, n=n_years)*(number_hens*survival_rate)
-  #>for the bedding
-  cost_bedding<-rep((bedding_price*number_hens), n_years)
-  #>for the daily routines
-  daily_cost<-rep((cost_daily*number_hens*hourly_wage), n_years)
-  #>for the weekly routines
-  weekly_cost<-rep((cost_weekly*number_hens*hourly_wage) , n_years)
-  #>for the irregular events
-  costs_irregular_events<-rep((irregular_cost*number_hens*hourly_wage), n_years)
-  #>for the veterinary
-  costs_vet<-cost_vet_visit+
-            costs_vaccin*number_hens+
-            chance_event(0.25,
-                         cost_vet_visit,
-                         0,
-                         n=12)  
-    
-  #Here we sum up the costs for chicken care####
   cost_care_chicken<-cost_feed+
-                    cost_bedding+
-                    daily_cost+
-                    weekly_cost+ 
-                    costs_irregular_events+
-                    costs_vet
-  
-  #Here we calculate all risks of including chicken into the plantation####
-  #The cost of each risk can be calculated by cost of the event *probability of the event
-  # cost_risks<-cost_risk_damage+cost_risk_pollution+cost_risk_diseasetransmission
-  # +cost_risk_beneficialreduction
-  
-  # Here we add all costs ####
-  Costs<-cost_invest_chicken+
-        cost_care_chicken 
-        #+cost_risks
- 
-  # Here we calculate all benefits of including chicken into the plantation ####
-  # >all direct benefits of selling eggs and meat
-  revenue_eggs<-egg_price*
-                vv(eggs_per_hen, var_CV, n=n_years)*
-                number_hens*
-                vv(survival_rate, var_CV, n=n_years)*
-                vv(marketable_share, var_CV, n=n_years)
-  revenue_meat<-revenue_hen*
-                number_hens*
-                vv(survival_rate, var_CV, n=n_years)
-                
+    cost_bedding+
+    daily_cost+
+    weekly_cost+ 
+    costs_irregular_events+
+    costs_vet
   
   benefit_direct<-revenue_eggs+revenue_meat
   
-  # Here we calculate all further benefits of including chicken into the plantation
-  # benefit_indirect<-benefit_weedmanagement+
-                      #benefit_reducedmowing+
-                      #benefit_volereduction+
-                      #benefit_scabreduction+
-                      #benefit_organicfertilizer
-  
-  #Here we add all benefits ####
   Benefits<-benefit_direct #+benefit_indirect
   
-  # Here we calculate the result ####
   Result<-Benefits-Costs
+
+  
+  # # Here we calculate all costs####
+  # 
+  # # First we calculate all necessary single investments####
+  # # >for the coop
+  # #cost_coop<-coop_invest*number_hens+
+  #             #(vv(maintenance_costs_coop, var_CV, n=12)*
+  #             #number_hens)
+  # cost_coop_invest<-coop_invest*number_hens
+  # 
+  # #why n-1, doesnt the coop need maintenance in the first year?
+  # #if so, add a zero for the first year
+  # cost_maintenance_coop<-c(0,vv(maintenance_coop, var_CV, n=n_years-1)*number_hens)
+  # 
+  # #I understand the line, but I would do it differently
+  # cost_coop<-  c(cost_coop_invest,rep(0, n_years-1)+
+  #             cost_maintenance_coop)
+  # 
+  # 
+  # # >for the fence (we need 4 sqm per hen), we know that chicken only move away
+  # # from the coop about 100m, so for the fence it is:
+  # cost_fence<-c(((fence_price*
+  #                 2*100+2*(number_hens*req_area/100)+
+  #                 battery_price)),
+  #              rep(0,n_years-1))
+  # 
+  # #I would add some variation to the cost aswell, because I assume prices for hens are variable
+  # cost_flock<-rep((cost_hen*number_hens), n_years)
+  # 
+  # cost_invest_chicken<-cost_coop+cost_fence+cost_flock
+  # 
+  # # Here we calculate the costs of taking care of the chicken####
+  # #>for the feed
+  # cost_feed<-feed_price*vv(feed_need*365, var_CV, n=n_years)*(number_hens*survival_rate)
+  # #>for the bedding
+  # cost_bedding<-rep((bedding_price*number_hens), n_years)
+  # #>for the daily routines
+  # daily_cost<-rep((cost_daily*number_hens*hourly_wage), n_years)
+  # #>for the weekly routines
+  # weekly_cost<-rep((cost_weekly*number_hens*hourly_wage) , n_years)
+  # #>for the irregular events
+  # costs_irregular_events<-rep((irregular_cost*number_hens*hourly_wage), n_years)
+  # #>for the veterinary
+  # costs_vet<-cost_vet_visit+
+  #           costs_vaccin*number_hens+
+  #           chance_event(0.25,
+  #                        cost_vet_visit,
+  #                        0,
+  #                        n=12)
+  # 
+  # #Here we sum up the costs for chicken care####
+  # cost_care_chicken<-cost_feed+
+  #                   cost_bedding+
+  #                   daily_cost+
+  #                   weekly_cost+
+  #                   costs_irregular_events+
+  #                   costs_vet
+  # 
+  # #Here we calculate all risks of including chicken into the plantation####
+  # #The cost of each risk can be calculated by cost of the event *probability of the event
+  # # cost_risks<-cost_risk_damage+cost_risk_pollution+cost_risk_diseasetransmission
+  # # +cost_risk_beneficialreduction
+  # 
+  # # Here we add all costs ####
+  # Costs<-cost_invest_chicken+
+  #       cost_care_chicken
+  #       #+cost_risks
+  # 
+  # # Here we calculate all benefits of including chicken into the plantation ####
+  # # >all direct benefits of selling eggs and meat
+  # revenue_eggs<-egg_price*
+  #               vv(eggs_per_hen, var_CV, n=n_years)*
+  #               number_hens*
+  #               vv(survival_rate, var_CV, n=n_years)*
+  #               vv(marketable_share, var_CV, n=n_years)
+  # revenue_meat<-revenue_hen*
+  #               number_hens*
+  #               vv(survival_rate, var_CV, n=n_years)
+  # 
+  # 
+  # benefit_direct<-revenue_eggs+revenue_meat
+  # 
+  # # Here we calculate all further benefits of including chicken into the plantation
+  # # benefit_indirect<-benefit_weedmanagement+
+  #                     #benefit_reducedmowing+
+  #                     #benefit_volereduction+
+  #                     #benefit_scabreduction+
+  #                     #benefit_organicfertilizer
+  # 
+  # #Here we add all benefits ####
+  # Benefits<-benefit_direct #+benefit_indirect
+  # 
+  # # Here we calculate the result ####
+  # Result<-Benefits-Costs
   
   
   
@@ -142,6 +252,9 @@ pls_result <- plsr.mcSimulation(object = Chicken_Apple_Simulation,
 input_table <- read.csv("data_chicken_apple.csv")
 
 plot_pls(pls_result, input_table = input_table, threshold = 0.5)
+
+
+
 
 # Here we can plot each or many EVPI results
 mcSimulation_table <- data.frame(Chicken_Apple_Simulation$x, Chicken_Apple_Simulation$y[(1)])
