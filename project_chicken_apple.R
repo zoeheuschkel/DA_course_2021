@@ -17,6 +17,7 @@ make_variables(estimate_read_csv(input_table))
 
 dir.create(evpi_results_folder)
 
+n_years
 # We assume: One chicken coop with 1200 laying hens, conventional conditions
 #Here we start writing the function ####
 Chicken_Apple_Simulation<- function(){
@@ -25,11 +26,11 @@ Chicken_Apple_Simulation<- function(){
   
   #Costs ----
   
-  cost_coop <- c(coop_invest * number_hens, rep(0, n = n_years -1))
+  cost_coop <- c(coop_invest * number_hens, rep(0, n_years -1))
   
   cost_maintenance_coop<-c(0,vv(maintenance_coop, var_CV, n=n_years-1)*number_hens)
   
-  cost_coop <- cost_coop + cost_maintenance_coop
+  cost_coop_nyears <- cost_coop + cost_maintenance_coop
   
   cost_fence<-c(((fence_price * 2 * 100 + 2*(number_hens*req_area/100)+
                     battery_price)), 
@@ -66,10 +67,10 @@ Chicken_Apple_Simulation<- function(){
   #same issue as above, the dead chicken die at the first day, that is a bit unrealistic
   #added vv for price, because that is in my eyes the most volatile variable
   revenue_eggs<-vv(egg_price, var_CV, n=n_years)*
-    vv(eggs_per_hen, var_CV, n=n_years)*
-    number_hens*
+    vv(eggs_per_hen, var_CV, n=n_years) * number_hens *
     vv(survival_rate, var_CV, n=n_years)*
     vv(marketable_share, var_CV, n=n_years)
+  
   revenue_meat<-vv(revenue_hen, var_CV, n=n_years)*
     number_hens*
     vv(survival_rate, var_CV, n=n_years)
@@ -115,19 +116,16 @@ Chicken_Apple_Simulation<- function(){
   
   #add the different cost and benefit varioables up
   
-  cost_invest_chicken<-cost_coop+cost_fence+cost_flock
+  cost_invest_chicken <- cost_coop_nyears + cost_fence + cost_flock
   
-  cost_care_chicken<-cost_feed+
-    cost_bedding+
-    daily_cost+
-    weekly_cost+ 
-    costs_irregular_events+
-    costs_vet +
-    cost_insurance
+  cost_care_chicken <- cost_feed + cost_bedding + daily_cost +
+    weekly_cost + costs_irregular_events + costs_vet + cost_insurance
   
-  benefit_direct<-revenue_eggs+revenue_meat
+  benefit_direct <- revenue_eggs + revenue_meat
   
-  Benefits<-benefit_direct + insurance_coverage #+benefit_indirect
+  Benefits <- benefit_direct + insurance_coverage #+benefit_indirect 
+  
+  Costs <- cost_invest_chicken + cost_care_chicken
   
   Result<-Benefits-Costs
 
@@ -252,6 +250,9 @@ decisionSupport::plot_distributions(mcSimulation_object = Chicken_Apple_Simulati
 # this one plots the cashflow
 plot_cashflow(mcSimulation_object = Chicken_Apple_Simulation, cashflow_var_name = "Cashflow")
 
+# Here we can plot each or many EVPI results
+mcSimulation_table <- data.frame(Chicken_Apple_Simulation$x, Chicken_Apple_Simulation$y[(1)])
+
 #share of cases with positive NPV
 sum(mcSimulation_table$NPV >= 0) / n_sim
 
@@ -264,8 +265,7 @@ plot_pls(pls_result, input_table = input_table, threshold = 0.5)
 
 
 
-# Here we can plot each or many EVPI results
-mcSimulation_table <- data.frame(Chicken_Apple_Simulation$x, Chicken_Apple_Simulation$y[(1)])
+
 evpi <- multi_EVPI(mc = mcSimulation_table, first_out_var = "NPV")
 plot_evpi(evpi, decision_vars = ("NPV"))
 
