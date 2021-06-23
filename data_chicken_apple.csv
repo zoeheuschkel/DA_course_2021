@@ -23,7 +23,7 @@ General_variables ,unit,description,lower,median,upper,distribution,variable
 ,%,share of marketable eggs,0.78,,0.82,tnorm_0_1,marketable_share
 ,€ / hen,marketing costs,0.9,,1.1,posnorm,marketing_cost
 ,year,Time period for the calculation,12,,12,const,n_years
-,hen,number of hens,1180,,1200,posnorm,number_hens
+,hen,number of hens,1200,,1200,const,number_hens
 ,€ / hen,"energy, water",0.59,,0.61,posnorm,other_needs_price
 ,sqm /  hen,required running area,4,,5,posnorm,req_area
 ,€,revenue for slaughtered hen,0.5,,1.5,posnorm,revenue_hen
