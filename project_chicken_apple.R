@@ -37,6 +37,8 @@ Chicken_Apple_Simulation<- function(){
   
   cost_flock<-vv(cost_hen*number_hens, n = n_years, var_CV =  var_CV)
   
+  cost_insurance <- vv(chicken_insurance, var_CV = var_CV, n = n_years)
+  
   #mavbe it makes more sense to assume that the price for chicken feed is variable instead of food consumption rate
   #also right now we assume that we buy x amount of chicken and that they instantly die, dont eat and lay no eggs
   #is there a way to let them die halfway through the year
@@ -72,6 +74,8 @@ Chicken_Apple_Simulation<- function(){
     number_hens*
     vv(survival_rate, var_CV, n=n_years)
   
+  insurance_coverage <- rep(0, n_years)
+  
   #indirect benefits
   
   
@@ -103,6 +107,8 @@ Chicken_Apple_Simulation<- function(){
       revenue_eggs[i] <- 0
       
       revenue_meat[i] <- 0
+      
+      insurance_coverage[i] <- cost_flock[i] + revenue_eggs[i] + revenue_meat[i]
     }
 
   }
@@ -116,11 +122,12 @@ Chicken_Apple_Simulation<- function(){
     daily_cost+
     weekly_cost+ 
     costs_irregular_events+
-    costs_vet
+    costs_vet +
+    cost_insurance
   
   benefit_direct<-revenue_eggs+revenue_meat
   
-  Benefits<-benefit_direct #+benefit_indirect
+  Benefits<-benefit_direct + insurance_coverage #+benefit_indirect
   
   Result<-Benefits-Costs
 
@@ -228,15 +235,13 @@ Chicken_Apple_Simulation<- function(){
 #For avian flu we include a loop that would change costs and benefits for this single event.####
 
 
-
-
-
+n_sim <- 10000
 
 # To get a probabilistic overview we run a Monte Carlo Simulation ####
 
 Chicken_Apple_Simulation <- mcSimulation(estimate_read_csv("data_chicken_apple.csv"),
                                          model_function = Chicken_Apple_Simulation,
-                                         numberOfModelRuns = 100,
+                                         numberOfModelRuns = n_sim,
                                          functionSyntax = "plainNames")
 # This fuction is to plot the distribution of values ####
 decisionSupport::plot_distributions(mcSimulation_object = Chicken_Apple_Simulation, 
@@ -246,6 +251,9 @@ decisionSupport::plot_distributions(mcSimulation_object = Chicken_Apple_Simulati
                                     base_size = 11)
 # this one plots the cashflow
 plot_cashflow(mcSimulation_object = Chicken_Apple_Simulation, cashflow_var_name = "Cashflow")
+
+#share of cases with positive NPV
+sum(mcSimulation_table$NPV >= 0) / n_sim
 
 pls_result <- plsr.mcSimulation(object = Chicken_Apple_Simulation,
                                 resultName = names(Chicken_Apple_Simulation$y)[1], ncomp = 1)
