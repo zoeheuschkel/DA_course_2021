@@ -9,7 +9,7 @@ General_variables ,unit,description,lower,median,upper,distribution,variable
 ,h / hen ,"periodically costs (cleaning, moving the pen…)",0.49,,0.51,posnorm,cost_weekly
 ,€ / hen,Costs vaccination,0.03,,0.09,posnorm,costs_vaccin
 ,€ / hen,depreciating after 12 years,11.95,,11.97,posnorm,discount
-,%,discount rate,0.05,,0.05,const,discount_rate
+,%,discount rate,0.01,,0.05,tnorm_0_1,discount_rate
 ,€,egg price,0.2,,0.36,posnorm,egg_price
 ,days,egg laying period,349,,351,posnorm,egg_time
 ,egg / hen / laying period,laid eggs,270,,290,posnorm,eggs_per_hen
@@ -30,4 +30,5 @@ General_variables ,unit,description,lower,median,upper,distribution,variable
 ,%,survival rate' of chicken for egg laying period,0.8,,0.97,tnorm_0_1,survival_rate
  ,% ,desired coefficient of variation in percent ,0.05,,0.1,tnorm_0_1 ,var_CV
 ,€ / hen,veterinarian costs,0.39,,0.41,posnorm,veterinary_price
-,,risk of avian influenca in your flock of chicken,0.001,,0.01,tnorm_0_1 ,risk_influenca_flock
+,chance,risk of avian influenca in your flock of chicken,0.001,,0.01,tnorm_0_1 ,risk_influenca_flock
+,€ / hen,base cost animal insurance,0.02732,,0.08938,posnorm,chicken_insurance
