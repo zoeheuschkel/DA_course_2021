@@ -2,52 +2,59 @@
 # conventional apple orchards####
 
 library(decisionSupport)
-# Here we define input table, the legend file and create folders to store 
-# our results
+
+# define path of input table and others
 input_table <- "data_chicken_apple.csv"
 legend_file <- "legend_chicken_apple.csv"
 mc_results_folder <- "mc_Results_chicken_apple"
 evpi_results_folder <- "evpi_Results_chicken_apple"
 
-# Here we make variables ####
+# function to create global variables from input table
 make_variables <- function(est,n=1)
 { x <- random(rho=est, n=n)
 for(i in colnames(x)) assign(i, as.numeric(x[1,i]),envir = .GlobalEnv)}
 
+#create variables to set up function
 make_variables(estimate_read_csv(input_table))
 
+#set the path for model outputs
 dir.create(evpi_results_folder)
 
-n_years
+#calculate the total apple yield (shouldn't this be inside the function?)
 harvest_total<-orchard_area*trees_per_ha*harvest_tree
 
 # We assume: An orchard with 10ha apples, 3000-4000 trees per ha, 
 # and one chicken coop with 1200 laying hens, conventional conditions
 
-#Here we start writing the function for the apple production ####
+#define the function
 Apple_Simulation<- function(){
+  
   
   #Costs apple orchard----
   
+  #set the cost to run machine for one hour
   cost_diesel<-consumption_diesel_hour*diesel_price
   
+  #cost to harvest the apples = time it takes to harvest * (wage + diesel_costs)
   cost_harvesting<-(vv(yearly_harvesting_hours, var_CV, n=n_years)*
     hourly_wage)+
     (vv(yearly_harvesting_hours, var_CV, n=n_years)*
     cost_diesel)
     
-  
+  #cost to mow the grass
   cost_mowing<-(vv(yearly_mowing_hours, var_CV, n=n_years)*
     hourly_wage)+
     (vv(yearly_mowing_hours, var_CV, n=n_years)*
     cost_diesel)
   
+  #cost to remove the weed from the strip
   cost_weeding<-(vv(yearly_weeding_hours, var_CV, n=n_years)*
     hourly_wage)+(vv(yearly_weeding_hours, var_CV, n=n_years)*
     cost_diesel)+ 
     cost_herbicide*
     orchard_area*2/3
  
+  #cost to control for apple scab
   cost_scabcontrol<-(vv(yearly_scabcontrol_hours, var_CV, n=n_years)*
     hourly_wage)+
     cost_fungicide*
@@ -55,6 +62,8 @@ Apple_Simulation<- function(){
     (vv(yearly_scabcontrol_hours, var_CV, n=n_years)*
     cost_diesel)
   
+  #event of extraordinary apple scab infestation (chance of 25%, should be a variable)
+  #also, why is there the 0.3? The extraordinary apple scab event takes and additional 30% of time?
   scab_year_treatment<-(vv(yearly_scabcontrol_hours, var_CV, n=1)*0.3*
     hourly_wage)+
     cost_fungicide*0.3*
@@ -63,6 +72,7 @@ Apple_Simulation<- function(){
     cost_diesel  
   cost_scab_year<-chance_event(0.25,scab_year_treatment, 0, n=n_years, 0.25)
   
+  #cost of insect control
   #insects are confused with pheromones, so its a one time application
   cost_insectcontrol<-vv(yearly_insectcontrol_hours, var_CV, n=n_years)*
     hourly_wage+
@@ -71,6 +81,7 @@ Apple_Simulation<- function(){
     vv(yearly_insectcontrol_hours, var_CV, n=n_years)*
     cost_diesel
   
+  #event of extraordinary insect infestation
   insect_year_treatment<-yearly_insectcontrol_hours*0.3*
     hourly_wage+
     cost_insecticide*0.3*
@@ -79,6 +90,11 @@ Apple_Simulation<- function(){
     cost_diesel  
   cost_insect_year<-chance_event(0.25,insect_year_treatment, 0, n=n_years, 0.25)
   
+#the chances of both events (intensive apple scab and intensive insect infestation)
+#what are they based on? Also events like these every four years seem a lot to me
+#maybe every 10 years? This should definately be a variable in the model
+  
+  #cost of nutrient application
   cost_nutrients<-(vv(yearly_fertilization_hours, var_CV, n=n_years)*
     hourly_wage)+
     cost_fertilizer*
@@ -86,48 +102,57 @@ Apple_Simulation<- function(){
     (vv(yearly_fertilization_hours, var_CV, n=n_years)*
     cost_diesel)
   
+  #vole control costs
   cost_vole_control<-vv(yearly_vole_control_hours, var_CV, n=n_years)*
     hourly_wage  
+  
+  #trees dying because of the voles?
   dead_tree_occurrence<-vv(dead_trees, var_CV, n=1)
+  
+  #cost to replace dead trees
   cost_replacement_trees<-cost_tree*dead_trees+planting_hours_tree*dead_trees*hourly_wage
+  
+  #chance of vole damage, chance should be definately be a variable
   occurence_vole_damage<-chance_event(0.3,1,0, n=n_years)
-  for(i in 1:n_years){
-    
-    if(occurence_vole_damage[i] == 1){
-      #if vole damage happens, some trees need to be replaced and affected trees 
-      #will die and have no fruits to be harvested. Thus, harvest needs to be adjusted. 
-      
-      #harvest_total[i]<-harvest_total-(dead_tree_occurrence*harvest_tree)
-      
-      cost_replacement_trees[i]<-cost_tree*dead_trees+planting_hours_tree*dead_trees*hourly_wage
-    }
-    
-  }
+  #--> should the cost of replacing trees be even higher at vole events? 
+  #do we know how many trees voles damage at this event?
+  
+  #right know this for loop doesnt make a difference because you assign the exact values again to cost-replacement_tree
+  # for(i in 1:n_years){
+  #   
+  #   if(occurence_vole_damage[i] == 1){
+  #     #if vole damage happens, some trees need to be replaced and affected trees 
+  #     #will die and have no fruits to be harvested. Thus, harvest needs to be adjusted. 
+  #     
+  #     #harvest_total[i]<-harvest_total-(dead_tree_occurrence*harvest_tree)
+  #     
+  #     cost_replacement_trees[i]<-cost_tree*dead_trees+planting_hours_tree*dead_trees*hourly_wage
+  #   }
+  #   
+  # }
   
 #Sum up all costs----
-  Costs_apple_production<-
-    cost_harvesting+
-    cost_mowing+
-    cost_weeding+
-    cost_insectcontrol+
-    cost_insect_year+
-    cost_scabcontrol+
-    cost_scab_year+
-    cost_vole_control+
-    cost_nutrients+
-    occurence_vole_damage
-    for(i in 1:n_years){
-      
-      if(occurence_vole_damage[i] == 1){
-        #if vole damage happens, some trees need to be replaced and affected trees 
-        #will die and have no fruits to be harvested. Thus, harvest needs to be adjusted. 
-        
-        cost_replacement_trees[i]<-
-          cost_tree*dead_trees+
-          planting_hours_tree*dead_trees*hourly_wage
-      }
-      
-    }
+  Costs_apple_production <- cost_harvesting + cost_mowing + cost_weeding +
+                              cost_insectcontrol + cost_insect_year +
+                              cost_scabcontrol + cost_scab_year +
+                              cost_vole_control + cost_nutrients +
+                              occurence_vole_damage
+  
+    #--> isnt this the exact same loop as above?
+    # for(i in 1:n_years){
+    #   
+    #   if(occurence_vole_damage[i] == 1){
+    #     #if vole damage happens, some trees need to be replaced and affected trees 
+    #     #will die and have no fruits to be harvested. Thus, harvest needs to be adjusted. 
+    #     
+    #     cost_replacement_trees[i]<-
+    #       cost_tree*dead_trees+
+    #       planting_hours_tree*dead_trees*hourly_wage
+    #   }
+    #   
+    # }
+  
+  
   #Calculate harvest loss> needs to be influenced by random events (scab_year, 
   #insect_year, vole_damage)
   #harvest_loss<-random_loss+scab_loss+insect_loss+occurence_vole_damage

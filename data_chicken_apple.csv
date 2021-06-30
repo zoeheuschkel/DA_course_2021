@@ -52,3 +52,8 @@ General_variables ,unit,description,lower,median,upper,distribution,variable,sou
 ,h   ,time to spray10 ha with 3000-4000 trees,6,,9,posnorm,yearly_insectcontrol_hours,
 ,h   ,time to put fertilizer on 10 ha with 3000-4000 trees,20,,40,posnorm,yearly_fertilization_hours,
 ,h   ,time to control 10 ha with 3000-4000 trees,25,,100,posnorm,yearly_vole_control_hours,
+,%,reduction in apple scab,1,,10,posnorm,reduce_apple_scab,
+,%,reduction in pests (apple sawfly),5,,15,posnorm,reduce_pest,
+,%,reduction weed ,5,,20,posnorm,reduce_weed,
+,%,reduction grass,10,,30,posnorm,reduce_grass,
+,%,reduction voles,1,,5,posnorm,reduce_vole,
