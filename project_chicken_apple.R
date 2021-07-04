@@ -241,6 +241,8 @@ Chicken_Apple_Simulation<- function(){
   #coop related costs
   cost_coop_nyears <- cost_coop + cost_maintenance_coop
   
+  
+  #NOTE: explain rationale behind the fence calculation!
   #investment cost of fence and battery
   cost_fence<-c(((fence_price * 2 * 100 + 2*(number_hens*req_area/100)+
                     battery_price)), 
@@ -250,7 +252,7 @@ Chicken_Apple_Simulation<- function(){
   cost_flock<- number_hens * vv(cost_hen, n = n_years, var_CV =  var_CV)
   
   #cost to insure the chicken (e.g. agains avian influenca)
-  cost_insurance <- vv(chicken_insurance, var_CV = var_CV, n = n_years)
+  cost_insurance <- vv(chicken_insurance, var_CV = var_CV, n = n_years) * number_hens
   
   
   #cost related to feeding
@@ -307,7 +309,7 @@ Chicken_Apple_Simulation<- function(){
   #modify the costs and benefits in case of of avian influenca
   for(i in 1:n_years){
     
-    if(occurence_influence_flock[i] == 1){
+    if(occurence_influenca_flock[i] == 1){
       #if avian influenca happens in the flock all the chicken will be killed and 
       #thus costs and beenfits are zero for this year, maybe costs for vet?
       
@@ -319,7 +321,7 @@ Chicken_Apple_Simulation<- function(){
       
 
       
-      insurance_coverage[i] <- cost_flock[i] + revenue_eggs[i] + revenue_meat[i]
+      #insurance_coverage[i] <- cost_flock[i] + revenue_eggs[i] + revenue_meat[i]
     } else if(occurence_influenca_neighbourhood){
       
       #having influenca in neighbourhood increases management costs 
@@ -341,9 +343,9 @@ Chicken_Apple_Simulation<- function(){
   
   benefit_direct <- revenue_eggs + revenue_meat
   
-  Benefits_chicken <- benefit_direct + insurance_coverage 
+  Benefits_chicken <- benefit_direct  
   
-  Costs_chicken <- Costs_apple_production+ cost_invest_chicken + cost_care_chicken
+  Costs_chicken <- cost_invest_chicken + cost_care_chicken
   
   net_revenue_chicken <- Benefits_chicken - Costs_chicken
   
@@ -354,7 +356,9 @@ Chicken_Apple_Simulation<- function(){
   return(list(NPV_apple_chicken = discount(net_revenue_apple_chicken, discount_rate, calculate_NPV = TRUE),
               Cashflow_apple_chicken = net_revenue_apple_chicken,
               NPV_apple_only = discount(Result_pure_apple, discount_rate, calculate_NPV = TRUE),
-              Cashflow_apple_only = Result_pure_apple))
+              Cashflow_apple_only = Result_pure_apple,
+              NPV_chicken_only = discount(net_revenue_chicken, discount_rate, calculate_NPV = TRUE),
+              cashflow_chicken_only = net_revenue_chicken))
 }
 
 
@@ -371,11 +375,25 @@ Chicken_Apple_Simulation <- mcSimulation(estimate_read_csv("data_chicken_apple.c
 
 # This fuction is to plot the distribution of values ####
 decisionSupport::plot_distributions(mcSimulation_object = Chicken_Apple_Simulation, 
-                                    vars = c("NPV_apple_chicken",'NPV_apple_only'),
+                                    vars = c("NPV_apple_chicken",'NPV_apple_only', 'NPV_chicken_only'),
                                     
                                     # You can even add more results here
                                     method = "smooth_simple_overlay", 
                                     base_size = 11)
+
+decisionSupport::plot_distributions(mcSimulation_object = Chicken_Apple_Simulation, 
+                                    vars = c('NPV_chicken_only'),
+                                    
+                                    # You can even add more results here
+                                    method = "smooth_simple_overlay", 
+                                    base_size = 11)
+
+pls_result <- plsr.mcSimulation(object = Chicken_Apple_Simulation,
+                                resultName = 'NPV_chicken_only', ncomp = 1)
+input_table <- read.csv("data_chicken_apple.csv")
+
+plot_pls(pls_result, input_table = input_table, threshold = 0.5)
+
 
 
 
