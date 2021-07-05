@@ -353,12 +353,20 @@ Chicken_Apple_Simulation<- function(){
   #add benefit of apple plantation to it
   net_revenue_apple_chicken <- Result_apple_with_chicken + net_revenue_chicken
   
-  return(list(NPV_apple_chicken = discount(net_revenue_apple_chicken, discount_rate, calculate_NPV = TRUE),
+  #calculate NPV for chicken, apple, chicken+apple 
+  
+  NPV_chicken_solo <- discount(net_revenue_chicken, discount_rate, calculate_NPV = TRUE)
+  NPV_apple_solo <- discount(Result_pure_apple, discount_rate, calculate_NPV = TRUE)
+  NPV_apple_chicken <- discount(net_revenue_apple_chicken, discount_rate, calculate_NPV = TRUE)
+
+  
+  return(list(NPV_apple_chicken = NPV_apple_chicken,
               Cashflow_apple_chicken = net_revenue_apple_chicken,
-              NPV_apple_only = discount(Result_pure_apple, discount_rate, calculate_NPV = TRUE),
+              NPV_apple_only = NPV_apple_solo,
               Cashflow_apple_only = Result_pure_apple,
-              NPV_chicken_only = discount(net_revenue_chicken, discount_rate, calculate_NPV = TRUE),
-              cashflow_chicken_only = net_revenue_chicken))
+              NPV_chicken_only = NPV_chicken_solo,
+              cashflow_chicken_only = net_revenue_chicken,
+              NPV_do_chicken = NPV_apple_chicken - NPV_apple_solo))
 }
 
 
@@ -382,42 +390,86 @@ decisionSupport::plot_distributions(mcSimulation_object = Chicken_Apple_Simulati
                                     base_size = 11)
 
 decisionSupport::plot_distributions(mcSimulation_object = Chicken_Apple_Simulation, 
+                                    vars = c("NPV_apple_chicken",'NPV_apple_only'),
+                                    
+                                    # You can even add more results here
+                                    method = "smooth_simple_overlay", 
+                                    base_size = 11)
+
+decisionSupport::plot_distributions(mcSimulation_object = Chicken_Apple_Simulation, 
                                     vars = c('NPV_chicken_only'),
                                     
                                     # You can even add more results here
                                     method = "smooth_simple_overlay", 
                                     base_size = 11)
 
+decisionSupport::plot_distributions(mcSimulation_object = Chicken_Apple_Simulation, 
+                                    vars = c('NPV_do_chicken'),
+                                    
+                                    # You can even add more results here
+                                    method = "smooth_simple_overlay", 
+                                    base_size = 11)
+
+
+#share of chicken proftiable
+sum(Chicken_Apple_Simulation$y$NPV_chicken_only >= 0) / n_sim
+
+library(ggplot2)
+library(scales)
+
+#calculate the synergy
+ggplot(Chicken_Apple_Simulation$y)+
+  geom_density(aes(x = c(NPV_apple_chicken - NPV_apple_only - NPV_chicken_only), fill = 'synergies'),
+               alpha = 0.4)+
+  geom_density(aes(x = c(NPV_chicken_only), fill = 'chicken direct benefit'),
+               alpha = 0.4)+
+  scale_x_continuous(labels = comma)+
+  scale_fill_manual(values = c("#009999", "#0000FF"))+
+  xlab('Net present value (€)')+
+  theme_bw()
+
+
+
 pls_result <- plsr.mcSimulation(object = Chicken_Apple_Simulation,
                                 resultName = 'NPV_chicken_only', ncomp = 1)
 input_table <- read.csv("data_chicken_apple.csv")
+plot_pls(pls_result, input_table = input_table, threshold = 0.5)
 
+pls_result <- plsr.mcSimulation(object = Chicken_Apple_Simulation,
+                                resultName = 'NPV_apple_only', ncomp = 1)
+input_table <- read.csv("data_chicken_apple.csv")
+plot_pls(pls_result, input_table = input_table, threshold = 0.5)
+
+pls_result <- plsr.mcSimulation(object = Chicken_Apple_Simulation,
+                                resultName = 'NPV_apple_chicken', ncomp = 1)
+input_table <- read.csv("data_chicken_apple.csv")
 plot_pls(pls_result, input_table = input_table, threshold = 0.5)
 
 
 
 
 # this one plots the cashflow
-plot_cashflow(mcSimulation_object = Chicken_Apple_Simulation, cashflow_var_name = "Cashflow")
+plot_cashflow(mcSimulation_object = Chicken_Apple_Simulation, cashflow_var_name = "Cashflow_apple_chicken")
+
+plot_cashflow(mcSimulation_object = Chicken_Apple_Simulation, cashflow_var_name = "cashflow_chicken_only")
+
+
+Chicken_Apple_Simulation$y[c('NPV_apple_chicken','NPV_apple_only','NPV_chicken_only')]
 
 # Here we can plot each or many EVPI results
-mcSimulation_table <- data.frame(Chicken_Apple_Simulation$x, Chicken_Apple_Simulation$y[(1)])
+mcSimulation_table <- data.frame(Chicken_Apple_Simulation$x, Chicken_Apple_Simulation$y[c('NPV_apple_chicken','NPV_apple_only','NPV_chicken_only')])
 
-#share of cases with positive NPV
-sum(mcSimulation_table$NPV >= 0) / n_sim
+evpi <- multi_EVPI(mc = mcSimulation_table, first_out_var = "NPV_apple_chicken")
+plot_evpi(evpi, decision_vars = ("NPV_apple_chicken"))
 
-pls_result <- plsr.mcSimulation(object = Chicken_Apple_Simulation,
-                                resultName = names(Chicken_Apple_Simulation$y)[1], ncomp = 1)
-input_table <- read.csv("data_chicken_apple.csv")
+mcSimulation_table <- data.frame(mcSimulation_results$x, mcSimulation_results$y[1:3])
 
-plot_pls(pls_result, input_table = input_table, threshold = 0.5)
+evpi <- multi_EVPI(mc = mcSimulation_table, first_out_var = "Interv_NPV")
 
-evpi <- multi_EVPI(mc = mcSimulation_table, first_out_var = "NPV")
-plot_evpi(evpi, decision_vars = ("NPV"))
 
 compound_figure(mcSimulation_object = Chicken_Apple_Simulation, input_table = NULL,
                 plsrResults = pls_result, EVPIresults = evpi,
-                decision_var_name = "NPV",
+                decision_var_name = "NPV_ch",
                 cashflow_var_name = "Cashflow", base_size = 11)
 # Click on zoom to see the big picture
 
