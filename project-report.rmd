@@ -1,0 +1,59 @@
+---
+title: "Chicken in Apple Project"
+author: "Zoe Heuschkel, Lars Caspersen and Miracle Obeng"
+date: "14/07/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Decision
+Would German apple farmers include chicken into their apple plantation in order to deal with the programmed banning of certain agro chemicals especially herbicides in the coming years?
+
+# Introduction
+Chicken in apple plantation is an agroforestry practice. This system is also known as the Silvopoutry system (integration of poultry with crops and/or trees production) has been identified as a sustainable way to increase the productivity of land and to provide a number of ecosystem services and environmental benefits compared to disaggregated agricultural and woodland systems. Organic and free-range poultry have, besides having access to a hen house, access to an outdoor run. In this respect, it is well known that poultry are more inclined to use the range when it is enriched with trees, and that in turn feather picking is reduced when more hens use the range.
+
+
+## Benefits of the System
+Chicken welfare (reduced stress, reduce pecking)
+
+Valuable revenue stream (commercial fruit)
+
+More tree cover result fewer water birds coming to the farm and hence lower the rate of transmit avian influenza virus transmission
+
+The trees can provide shade for chicken in summer, and shelter from wind in the winter
+
+The poultry can promote nutrient cycling, reduce scab and pest/weed control
+
+Reduce point load of nutrients because hens spread over a larger surface
+
+## Challenges and uncertatinties of the system
+Gradual decrease of chicken benefits with distance to coop
+
+Few studies on disease and pest reduction resulting in (and unclear observations) estimations of inputs
+
+Reducing occurrence of insect, disease and pest does not linearly translate to decrease in controlling these.
+
+Cost/benefit ratio of keeping chicken  
+
+Damage done by chicken on the fruits
+
+# Stakeholders
+Our stakeholders are the people who will directly or indirectly benefit form the decision model. They Include;Farmers (apple and chicken), Retailers, Consumers, Non-governmental organizations (NGOs).
+
+## Decision Maker
+Farmers with already established, conventional commercial apple farmer in NW Europe. Farmers are key decision makers because of calculation the Net Present Value (NPV) in the model This is a variable which is more important to the producers (farmer).
+
+# Conceptual and Coded Model
+
+# Model Outcome Outcome
+
+# Discusion
+
+# References
+
+
+
+
