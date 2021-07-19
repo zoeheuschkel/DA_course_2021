@@ -52,6 +52,8 @@ The conceptual model of the decision to inlcude chicken into the apple orchard c
 
 The other component of the model consits out of the apple orchard. In our project we decided to include all aspects of the apple orchard even if not amended by the presence of chicken. So similar to the chicken part, it consists out of the costs and benefits of growing apple, with the difference that the orchard is already established and thus there are no initial investments. Benefits come mainly from the apple harvested and sold, which are modified by the apple price and yield. Costs were differentiated between items affected by the chicken and chicken-independent ones. 
 
+important thoughts: finish the avian influenca, finsish the apple subsystem, then talk about the interaction, then say it would have been clearer to only include the aspects which were affected by chicken instead of all the aspects of growing apple trees (idea was to compare also the scale, and we can see that the direct benefits of keeping chicken, direct benefits of growing apple, synergies and theoretical trade-offs even though not implemended in this version). Luedeling mentioned that the should'nt have excluded the yield effect of chicken, maybe even negative (chicken might harm some trees). aspect of gradual influence of chicken not respected by our model
+
 
 ```{r,echo = FALSE,fig.align='center'}
 knitr::include_graphics('pictures/graphical-model.png')
