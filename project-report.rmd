@@ -48,6 +48,11 @@ Farmers with already established, conventional commercial apple farmer in NW Eur
 
 # Conceptual and Coded Model
 
+```{r,echo = FALSE,fig.align='center'}
+knitr::include_graphics('pictures/graphical-model.png')
+
+```
+
 # Model Outcome Outcome
 
 # Discusion
