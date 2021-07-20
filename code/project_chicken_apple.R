@@ -4,10 +4,10 @@
 library(decisionSupport)
 
 # define path of input table and others
-input_table <- "data_chicken_apple.csv"
-legend_file <- "legend_chicken_apple.csv"
-mc_results_folder <- "mc_Results_chicken_apple"
-evpi_results_folder <- "evpi_Results_chicken_apple"
+input_table <- "data/data_chicken_apple.csv"
+legend_file <- "data/legend_chicken_apple.csv"
+mc_results_folder <- "data/mc_Results_chicken_apple"
+evpi_results_folder <- "data/evpi_Results_chicken_apple"
 
 # function to create global variables from input table
 make_variables <- function(est,n=1)
@@ -22,7 +22,6 @@ dir.create(evpi_results_folder)
 
 #number of simulation runs
 n_sim <- 10000
-
 
 #function to update the tree population after voles killed trees and new young trees were planted
 calc_tree_population <- function(mature_tree_population, dead_tree_occurrence, n_year_fruit = 3, 
@@ -74,39 +73,32 @@ Chicken_Apple_Simulation<- function(){
   cost_diesel <- consumption_diesel_hour * diesel_price
   
   #cost to harvest the apples = time it takes to harvest * (wage + diesel_costs)
-  cost_harvesting <- (vv(yearly_harvesting_hours, var_CV, n=n_years) * hourly_wage) +
-                        (vv(yearly_harvesting_hours, var_CV, n=n_years) * cost_diesel)
+  cost_harvesting <- vv(yearly_harvesting_hours, var_CV, n=n_years) * (hourly_wage + cost_diesel)
   
   #cost to mow the grass
-  cost_mowing <- (vv(yearly_mowing_hours, var_CV, n=n_years) * hourly_wage) +
-                    (vv(yearly_mowing_hours, var_CV, n=n_years) * cost_diesel)
+  cost_mowing <- vv(yearly_mowing_hours, var_CV, n=n_years) * (hourly_wage + cost_diesel)
   
   #cost to remove the weed from the strip
-  cost_weeding <- (vv(yearly_weeding_hours, var_CV, n=n_years) * hourly_wage) + 
-                      (vv(yearly_weeding_hours, var_CV, n=n_years) * cost_diesel) + 
+  cost_weeding <- vv(yearly_weeding_hours, var_CV, n=n_years) * (hourly_wage + cost_diesel) + 
                       cost_herbicide * orchard_area * share_application_area
   
   
   #### Apple Scab -----
   
   #cost to control for apple scab
-  cost_scabcontrol <- (vv(yearly_scabcontrol_hours, var_CV, n=n_years) * hourly_wage) +
-                          cost_fungicide * orchard_area * share_application_area +
-                          (vv(yearly_scabcontrol_hours, var_CV, n=n_years) *  cost_diesel)
+  cost_scabcontrol <- vv(yearly_scabcontrol_hours, var_CV, n=n_years) * (hourly_wage + cost_diesel) +
+                          cost_fungicide * orchard_area * share_application_area
   
   
   #event of extraordinary apple scab infestation (chance of 25%, should be a variable)
   #changed the 0.3 to a variable in the input table
   #reformulated the equations so that the factor (0.3) is present only once
-  scab_year_treatment <- (yearly_scabcontrol_hours * hourly_wage +
-                            cost_fungicide * orchard_area * share_application_area +
-                            yearly_scabcontrol_hours *cost_diesel) * proportion_extracost_apple_scab  
-  
+
   #draw which years are high in scab infestation
   intense_scab_year <- chance_event(chance_intense_apple_scab, 1, 0, n = n_years)
   
   #calculate extra costs in these years
-  cost_scab_year <- intense_scab_year * vv(scab_year_treatment, var_CV = var_CV, n = n_years)
+  cost_scab_year <- intense_scab_year * cost_scabcontrol * proportion_extracost_apple_scab
   
   #yield modifying vector, 1 = 100 % of yield remains, 1-yieldreduction factor in other cases
   yield_reduction <- rep(1,n_years) - (intense_scab_year * vv(yield_reduction_apple_scab, var_CV = var_CV, n = n_years))
@@ -117,21 +109,16 @@ Chicken_Apple_Simulation<- function(){
   
   #cost of insect control
   #insects are confused with pheromones, so its a one time application
-  cost_insectcontrol <- vv(yearly_insectcontrol_hours, var_CV, n=n_years) * hourly_wage +
-                            cost_insecticide * orchard_area +
-                            vv(yearly_insectcontrol_hours, var_CV, n=n_years) * cost_diesel
+  cost_insectcontrol <- vv(yearly_insectcontrol_hours, var_CV, n=n_years) * (hourly_wage + cost_diesel) +
+                            cost_insecticide * orchard_area * share_application_area
   
   #event of extraordinary insect infestation
-  #reformulated it so that the 0.3 is a variable and appears only once
-  insect_year_treatment <- (yearly_insectcontrol_hours * hourly_wage +
-                              cost_insecticide * orchard_area * share_application_area +
-                              yearly_insectcontrol_hours * cost_diesel) * proportion_extracost_insect_infestation
   
   #draw which years are high in scab infestation
   intense_insect_year <- chance_event(chance_intense_insect_infestation, 1, 0, n = n_years)
   
   #calculate extra costs in these years
-  cost_insect_year <- intense_insect_year * vv(insect_year_treatment, var_CV = var_CV, n = n_years)
+  cost_insect_year <- intense_insect_year * cost_insectcontrol * proportion_extracost_insect_infestation
   
   #yield modifying vector, 1 = 100 % of yield remains, 1-yieldreduction factor in other cases
   yield_reduction <- yield_reduction - (intense_insect_year * vv(yield_reduction_insect, var_CV = var_CV, n = n_years))
@@ -140,9 +127,8 @@ Chicken_Apple_Simulation<- function(){
   
   
   #yearly cost to apply nutrients
-  cost_nutrients <- (vv(yearly_fertilization_hours, var_CV, n = n_years) * hourly_wage) + 
-                        cost_fertilizer * orchard_area * share_application_area +
-                        (vv(yearly_fertilization_hours, var_CV, n = n_years) * cost_diesel)
+  cost_nutrients <- vv(yearly_fertilization_hours, var_CV, n = n_years) * (hourly_wage + cost_diesel) + 
+                        cost_fertilizer * orchard_area * share_application_area
   
   
   
