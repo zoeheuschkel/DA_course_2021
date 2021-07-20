@@ -240,47 +240,42 @@ Chicken_Apple_Simulation<- function(){
   #cost to insure the chicken (e.g. agains avian influenca)
   cost_insurance <- vv(chicken_insurance, var_CV = var_CV, n = n_years) * number_hens
   
+  flock_size <- number_hens * vv(survival_rate, var_CV, n=n_years)
+  
   
   #cost related to feeding
-  cost_feed<-vv(feed_need, var_CV = var_CV, n = n_years)*
-    feed_price*365*
-    (number_hens*vv(survival_rate, var_CV, n=n_years))
+  cost_feed<-vv(feed_need, var_CV = var_CV, n = n_years) *
+    feed_price * 365 * flock_size
   
   #cost related to bedding
   cost_bedding<-vv(bedding_price, var_CV = var_CV, n = n_years) *
-    (number_hens*vv(survival_rate, var_CV, n=n_years))
+    flock_size
   
   #calculation of daily, weekly and irregular tasks
-  daily_cost<-vv(cost_daily, var_CV = var_CV, n = n_years) * 
-    number_hens * vv(survival_rate, var_CV, n=n_years) *
-    hourly_wage
+  daily_cost <- vv(cost_daily, var_CV = var_CV, n = n_years) * 
+    flock_size * hourly_wage
   
   #>for the weekly routines
-  weekly_cost<-vv(cost_weekly, var_CV = var_CV, n = n_years) * 
-    number_hens * vv(survival_rate, var_CV, n=n_years) *
-    hourly_wage
+  weekly_cost <- vv(cost_weekly, var_CV = var_CV, n = n_years) * 
+    flock_size * hourly_wage
   
-  costs_irregular_events<-vv(irregular_cost, var_CV = var_CV, n = n_years) * 
-    number_hens * vv(survival_rate, var_CV, n=n_years) *
-    hourly_wage
+  costs_irregular_events <- vv(irregular_cost, var_CV = var_CV, n = n_years) * 
+    flock_size * hourly_wage
   
   #>for the veterinary
-  costs_vet<-cost_vet_visit+ costs_vaccin*number_hens +
+  costs_vet <- cost_vet_visit + costs_vaccin * number_hens +
     chance_event(chance_extra_vet_visit, cost_vet_visit, 0, n=n_years)  
   
   
   #revenues----
   
   #sell eggs
-  revenue_eggs<-vv(egg_price, var_CV, n=n_years)*
-    vv(eggs_per_hen, var_CV, n=n_years) * number_hens *
-    vv(survival_rate, var_CV, n=n_years)*
+  revenue_eggs <- vv(egg_price, var_CV, n=n_years) *
+    vv(eggs_per_hen, var_CV, n=n_years) * flock_size *
     vv(marketable_share, var_CV, n=n_years)
   
   #sell meat
-  revenue_meat<-vv(revenue_hen, var_CV, n=n_years)*
-    number_hens*
-    vv(survival_rate, var_CV, n=n_years)
+  revenue_meat <- vv(revenue_hen, var_CV, n=n_years) * flock_size
   
   #insurance pays for forgone revenue from chicken and for their value, so in either case revenue will be the same
   #so it doesnt make a difference if the influenca happens or not for our modelling
