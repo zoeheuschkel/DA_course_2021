@@ -352,14 +352,24 @@ Chicken_Apple_Simulation<- function(){
 
 n_sim <- 10000
 
+
+
 # To get a probabilistic overview we run a Monte Carlo Simulation ####
-Chicken_Apple_Simulation <- mcSimulation(estimate_read_csv("data_chicken_apple.csv"),
+Chicken_Apple_Simulation <- mcSimulation(estimate_read_csv(input_table),
                                          model_function = Chicken_Apple_Simulation,
                                          numberOfModelRuns = n_sim,
                                          functionSyntax = "plainNames")
 
+# This function is to plot the distribution of values ####
+decisionSupport::plot_distributions(mcSimulation_object = Chicken_Apple_Simulation, 
+                                    vars = c("NPV_do_chicken"),
+                                    method = "smooth_simple_overlay", 
+                                    base_size = 11)
 
-# This fuction is to plot the distribution of values ####
+save.image('pictures/density_decision_do.png')
+
+
+# This function is to plot the distribution of values ####
 decisionSupport::plot_distributions(mcSimulation_object = Chicken_Apple_Simulation, 
                                     vars = c("NPV_apple_chicken",'NPV_apple_only', 'NPV_chicken_only'),
                                     

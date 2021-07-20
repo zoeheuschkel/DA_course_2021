@@ -64,11 +64,22 @@ The unaltered apple orchard costs serve as a baseline to compare the effect of t
 knitr::include_graphics('pictures/graphical-model.png')
 
 ```
+
 # Coded model
 
-In the beginning the costs and benefits of the apple subsystem were calculated for each year. 
+The model is structured similar to the graphical model. At first the cost and then the benefits of the apple subsystem are calculated, followed by the expenses and income of the chicken subsystem. In both subsystems the cost items are expressed per tree / chicken. Especially variables covering prices or work time were varied within the years using `vv()`. In case of apple scab, harmful insect control and voles a chance for an especially bad year was included using `chance_event()` and a variable stating by how many percent the control costs increase in case of the event. Furthermore, in case of the event, a yield reduction of the apple trees is assumed. We assumed that these events happen independent from each other, so it is also possible that in an especially unfortunate year all these events happen at the same time. The yield reduction factor is in these cases 'collected' and then applied to reduce the regular yield. Impact of voles on trees were handle differently than apple scab and insect. We assumed that voles kill individual tree by damaging the rootstock. So in case of voles, we assumed that a certain share of the trees die in event of a 'bad' vole year. Furthermore, we assumed that newly planted trees for the first three years do not yield any apples and for the following three years only a lower amount of apples than fully mature apple trees. Yield of young and mature trees were calculated independent from each other. To keep track of the three tree populations (no yield, reduced yield and full yield) a function was written (`calc_tree_population()`). It takes the vector of the `chance_event()` for voles as an input and returns the quantity of mature and young trees as output. In case of apple scab, insect, voles, weeding and mowing, the presence of chicken in the orchard was assumed to be beneficial. To keep the calculations simple, we assumed that the costs of control were reduced but the yield was left unaltered. After havin calculated the costs, the benefits of the apple subsystem was calculated by multiplying the tree populations with yield per tree and apple price.
+
+In the second step costs and benefits of the chicken subsystem were calculated. Most noteworthy is again a `chance_event()` for the two cases of avian influenza: either in neighborhood or within the flock. Since the function was applied for both events independently, there was a small chance that in one year both yield a positive value. In that case the more severe case outweighs and the malus for management cost is only increased by the factor of the flock scenario. In either case the synergistic effect of chicken and apple on the control cost were set to zero for the influenza years because the chickens were kept indoors / were slaughtered. Additional to the threat of avian influenza, we also had a general threat that the chicken might not survive the year in our model, expressed as `survival_rate`. However, in the case of 'regular' death it is assumed that the chicken die right away at the first day, do not produce any eggs or consume any fodder or dirty any bedding. Furthermore, it is assumed that the farmer buys chicken at a yearly basis, even though the high productive egg-laying period is somewhat shorter.
+
+At the end of the model, revenues of the apple subsystem are subtracted from the combined system to model the additional money earned / lost by the decision to include chicken to the apple orchard.
+
+<!-- ask in wednesday office hour if they want us to implement their feedback (effect of chicken on apple yield) -->
+
+<!-- mention that some variables were assumed to be constant (like the years until full yield for apple, the total number of trees or the size of the chicken flock) -->
 
 # Model Outcome Outcome
+
+
 
 # Discusion
 
