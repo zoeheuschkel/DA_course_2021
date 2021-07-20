@@ -66,6 +66,8 @@ knitr::include_graphics('pictures/graphical-model.png')
 ```
 # Coded model
 
+In the beginning the costs and benefits of the apple subsystem were calculated for each year. 
+
 # Model Outcome Outcome
 
 # Discusion

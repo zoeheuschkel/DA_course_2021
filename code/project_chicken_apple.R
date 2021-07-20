@@ -20,9 +20,6 @@ make_variables(estimate_read_csv(input_table))
 #set the path for model outputs
 dir.create(evpi_results_folder)
 
-#number of simulation runs
-n_sim <- 10000
-
 #function to update the tree population after voles killed trees and new young trees were planted
 calc_tree_population <- function(mature_tree_population, dead_tree_occurrence, n_year_fruit = 3, 
          n_year_full_harvest = 6){
