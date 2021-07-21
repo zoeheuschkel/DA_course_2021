@@ -19,26 +19,26 @@ knitr::opts_chunk$set(echo = TRUE)
 Would German apple farmers include chicken into their apple plantation in order to deal with the programmed banning of certain agro chemicals especially herbicides in the coming years?
 
 # Introduction
-Chicken in apple plantation is an agroforestry practice. This system is also known as the Silvopoutry system (integration of poultry with crops and/or trees production) has been identified as a sustainable way to increase the productivity of land and to provide a number of ecosystem services and environmental benefits compared to disaggregated agricultural and woodland systems. Organic and free-range poultry have, besides having access to a hen house, access to an outdoor run. In this respect, it is well known that poultry are more inclined to use the range when it is enriched with trees, and that in turn feather picking is reduced when more hens use the range.
+Chicken in apple plantation is an agroforestry practice. This system is also known as the Silvopoutry system (integration of poultry with crops and/or trees production) has been identified as a sustainable way to increase the productivity of land and to provide a number of ecosystem services and environmental benefits compared to disaggregated agricultural and woodland systems (Smith et al. 2013). Organic and free-range poultry have, besides having access to a hen house, access to an outdoor run. In this respect, it is well known that poultry are more inclined to use the range when it is enriched with trees, and that in turn feather picking is reduced when more hens use the range (Bestman and Wagenaar 2003).
 
 
 ## Benefits of the System
-Chicken welfare (reduced stress, reduce pecking)
+Chicken welfare (reduced stress, reduce pecking)  (Bestman and Bikker-Ouwejan, 2020)
 
-Valuable revenue stream (commercial fruit)
+Valuable revenue stream (commercial fruit) (Yates et. al., 2007)
 
 More tree cover result fewer water birds coming to the farm and hence lower the rate of transmit avian influenza virus transmission
 
-The trees can provide shade for chicken in summer, and shelter from wind in the winter
+The trees can provide shade for chicken in summer, and shelter from wind in the winter (Bestman et. al., 2018)
 
-The poultry can promote nutrient cycling, reduce scab and pest/weed control
+The poultry can promote nutrient cycling, reduce scab and pest/weed control (Bestman et. al., 2018)
 
-Reduce point load of nutrients because hens spread over a larger surface
+Reduce point load of nutrients because hens spread over a larger surface (Smith et al. 2013)
 
 ## Challenges and uncertatinties of the system
-Gradual decrease of chicken benefits with distance to coop
+Gradual decrease of chicken benefits with distance to coop (Timmermanns and Bestman, 2016)
 
-Few studies on disease and pest reduction resulting in (and unclear observations) estimations of inputs
+Few studies on disease and pest reduction resulting in (and unclear observations) estimations of inputs (Yates et. al., 2007)
 
 Reducing occurrence of insect, disease and pest does not linearly translate to decrease in controlling these.
 
