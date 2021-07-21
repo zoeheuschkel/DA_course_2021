@@ -339,12 +339,13 @@ Chicken_Apple_Simulation<- function(){
 
   
   return(list(NPV_apple_chicken = NPV_apple_chicken,
-              Cashflow_apple_chicken = net_revenue_apple_chicken,
+              cashflow_apple_chicken = net_revenue_apple_chicken,
               NPV_apple_only = NPV_apple_solo,
-              Cashflow_apple_only = Result_pure_apple,
+              cashflow_apple_only = Result_pure_apple,
               NPV_chicken_only = NPV_chicken_solo,
               cashflow_chicken_only = net_revenue_chicken,
-              NPV_do_chicken = NPV_apple_chicken - NPV_apple_solo))
+              NPV_do_chicken = NPV_apple_chicken - NPV_apple_solo,
+              cashflow_do_decision = net_revenue_apple_chicken - Result_pure_apple))
 }
 
 
@@ -360,52 +361,43 @@ Chicken_Apple_Simulation <- mcSimulation(estimate_read_csv(input_table),
                                          numberOfModelRuns = n_sim,
                                          functionSyntax = "plainNames")
 
-# This function is to plot the distribution of values ####
+# density plot of decsion
+jpeg(file="pictures/density_decision_do.jpeg",
+     width=700, height=500)
 decisionSupport::plot_distributions(mcSimulation_object = Chicken_Apple_Simulation, 
                                     vars = c("NPV_do_chicken"),
-                                    method = "smooth_simple_overlay", 
+                                    old_names = c("NPV_do_chicken"),
+                                    new_names = c("NPV include chicken"),
+                                    x_axis_name = 'Outcome distribution (in €)',
+                                    method = "boxplot_density", 
                                     base_size = 11)
+dev.off()
 
-save.image('pictures/density_decision_do.png')
 
 
+jpeg(file="pictures/density_apple-chicken.jpg",
+     width=700, height=500)
 # This function is to plot the distribution of values ####
-decisionSupport::plot_distributions(mcSimulation_object = Chicken_Apple_Simulation, 
-                                    vars = c("NPV_apple_chicken",'NPV_apple_only', 'NPV_chicken_only'),
-                                    
-                                    # You can even add more results here
-                                    method = "smooth_simple_overlay", 
-                                    base_size = 11)
-
 decisionSupport::plot_distributions(mcSimulation_object = Chicken_Apple_Simulation, 
                                     vars = c("NPV_apple_chicken",'NPV_apple_only'),
                                     
                                     # You can even add more results here
                                     method = "smooth_simple_overlay", 
+                                    x_axis_name = 'Outcome distribution (in €)',
                                     base_size = 11)
-
-decisionSupport::plot_distributions(mcSimulation_object = Chicken_Apple_Simulation, 
-                                    vars = c('NPV_chicken_only'),
-                                    
-                                    # You can even add more results here
-                                    method = "smooth_simple_overlay", 
-                                    base_size = 11)
-
-decisionSupport::plot_distributions(mcSimulation_object = Chicken_Apple_Simulation, 
-                                    vars = c('NPV_do_chicken'),
-                                    
-                                    # You can even add more results here
-                                    method = "smooth_simple_overlay", 
-                                    base_size = 11)
-
+dev.off()
 
 #share of chicken proftiable
-sum(Chicken_Apple_Simulation$y$NPV_chicken_only >= 0) / n_sim
+sum(Chicken_Apple_Simulation$y$NPV_do_chicken >= 0) / n_sim
+#--> in every single case the decsision is benefitial. very realistic
 
 library(ggplot2)
 library(scales)
 
 #calculate the synergy
+
+jpeg(file="pictures/density_synergy.jpeg",
+     width=700, height=500)
 ggplot(Chicken_Apple_Simulation$y)+
   geom_density(aes(x = c(NPV_apple_chicken - NPV_apple_only - NPV_chicken_only), fill = 'synergies'),
                alpha = 0.4)+
@@ -413,31 +405,39 @@ ggplot(Chicken_Apple_Simulation$y)+
                alpha = 0.4)+
   scale_x_continuous(labels = comma)+
   scale_fill_manual(values = c("#009999", "#0000FF"))+
-  xlab('Net present value (€)')+
+  xlab('Outcome distribution (in €)')+
+  ylab('Density estimate')+
+  labs(fill = '')+
   theme_bw()
+dev.off()
 
 
-
-pls_result <- plsr.mcSimulation(object = Chicken_Apple_Simulation,
-                                resultName = 'NPV_chicken_only', ncomp = 1)
-input_table <- read.csv("data_chicken_apple.csv")
-plot_pls(pls_result, input_table = input_table, threshold = 0.5)
+# PLS analysis ----
 
 pls_result <- plsr.mcSimulation(object = Chicken_Apple_Simulation,
-                                resultName = 'NPV_apple_only', ncomp = 1)
-input_table <- read.csv("data_chicken_apple.csv")
+                                resultName = 'NPV_do_chicken', ncomp = 1)
+input_table <- read.csv("data/data_chicken_apple.csv")
+
+#create and save plot 
+jpeg(file="pictures/pls_decision.jpeg",
+     width=700, height=500)
 plot_pls(pls_result, input_table = input_table, threshold = 0.5)
-
-pls_result <- plsr.mcSimulation(object = Chicken_Apple_Simulation,
-                                resultName = 'NPV_apple_chicken', ncomp = 1)
-input_table <- read.csv("data_chicken_apple.csv")
-plot_pls(pls_result, input_table = input_table, threshold = 0.5)
+dev.off()
 
 
+# cashflow ----
 
 
-# this one plots the cashflow
-plot_cashflow(mcSimulation_object = Chicken_Apple_Simulation, cashflow_var_name = "Cashflow_apple_chicken")
+jpeg(file="pictures/cashflow_decision.jpeg",
+     width=700, height=500)
+plot_cashflow(mcSimulation_object = Chicken_Apple_Simulation, cashflow_var_name = "cashflow_do_decision")
+dev.off()
+
+
+
+
+
+
 
 plot_cashflow(mcSimulation_object = Chicken_Apple_Simulation, cashflow_var_name = "cashflow_chicken_only")
 

@@ -79,7 +79,59 @@ At the end of the model, revenues of the apple subsystem are subtracted from the
 
 # Model Outcome Outcome
 
+first plot to show distributions of apple vs apple + chicken. they are very similar because the absolute impact of chicken is relatively low
 
+<!-- only apple vs apple +  chicken plot here here -->
+
+```{r,echo = FALSE,fig.align='center'}
+knitr::include_graphics('pictures/density_apple-chicken.jpg')
+
+```
+
+In the next plot you can see the direct revenue of the chicken subsystem `chicken direct benefit` plotted against the simulated synergies `synergies`. While the direct benefits of keeping the chicken is subject to some risk as roughly a third of the density plot is negative, the synergies are strictly positive. Furthermore, the synergistic effect are much higher than the direct benefits. This raises doubts if the current parameter choices are accurate.
+
+<!-- you can see that I tried to recreate the look of the density plots here, -->
+
+```{r,echo = FALSE,fig.align='center'}
+knitr::include_graphics('pictures/density_synergy.jpeg')
+
+```
+
+
+write about the density plot of inclduding chicken to the apple orchard. extremely positive, probably because we overestimated the positive effect of the chicken on the orhard
+
+```{r,echo = FALSE,fig.align='center'}
+knitr::include_graphics('pictures/density_decision_do.jpeg')
+
+```
+
+next comes a plot on the cashflow. we see that after the initial investment the cashflow stabilizes but variability of income is still large in the following years
+
+```{r,echo = FALSE,fig.align='center'}
+knitr::include_graphics('pictures/cashflow_decision.jpeg')
+
+```
+
+I am still curious how the cashflow looks like if the we investigate the cummulative cashflow. Maybe I can make a plot on that aswell to see how long on average it takes to come even.
+
+```{r,echo = FALSE,fig.align='center'}
+knitr::include_graphics('pictures/dummy_picture.jpg')
+
+```
+
+The second part is about the PLS analysis on the decision do part. then we can see some bar charts on that.biggest drives propably are the cost benefits of chicken in the orchard
+
+```{r,echo = FALSE,fig.align='center'}
+knitr::include_graphics('pictures/pls_decision.jpeg')
+
+```
+
+finally we will have a plot on the evpi for decision do. since right now everything is mostly positive, there is not much interesting to see
+
+```{r,echo = FALSE,fig.align='center'}
+knitr::include_graphics('pictures/dummy_picture.jpg')
+
+```
 
 # Discusion
 
