@@ -27,7 +27,7 @@ General_variables ,unit,description,lower,median,upper,distribution,variable,sou
 ,€ / kg,feed price,0.28,,0.36,posnorm,feed_price,
 ,€ / m,price of electric mobile fence,4,,6,posnorm,fence_price,
 ,kg  ,yield per tree,6,,18,posnorm,harvest_tree,
-,€ / h,Costs hourly wage (including employers costs),12.36,,12.7,posnorm,hourly_wage,
+,€ / h,Costs hourly wage (including employers costs),12,,17,posnorm,hourly_wage,
 ,€ / hen,interest rate costs (4%),3.18,,3.2,posnorm,interest_rate,
 ,h / hen ,"irregular tasks (calling vet, …)",0.149,,0.151,posnorm,irregular_cost,
 ,€ / hen ,maintenance costs coop,2.5,,3.2,posnorm,maintenance_coop,
@@ -39,10 +39,10 @@ General_variables ,unit,description,lower,median,upper,distribution,variable,sou
 ,€ / hen,"energy, water",0.59,,0.61,posnorm,other_needs_price,
 ,h   ,time required to plant a tree,1.5,,3,posnorm,planting_hours_tree,
 ,%,reduction in apple scab,1,,10,posnorm,reduce_apple_scab,
-,%,reduction grass,10,,30,posnorm,reduce_grass,
-,%,reduction in pests (apple sawfly),5,,15,posnorm,reduce_pest,
+,%,reduction grass,1,,30,posnorm,reduce_grass,
+,%,reduction in pests (apple sawfly),1,,15,posnorm,reduce_pest,
 ,%,reduction voles,1,,5,posnorm,reduce_vole,
-,%,reduction weed ,5,,20,posnorm,reduce_weed,
+,%,reduction weed ,1,,20,posnorm,reduce_weed,
 ,sqm /  hen,required running area,4,,5,posnorm,req_area,
 ,€,revenue for slaughtered hen,0.5,,1.5,posnorm,revenue_hen,
 ,chance,risk of avian influenca in your flock of chicken,0.001,,0.01,tnorm_0_1 ,risk_influenca_flock,
@@ -50,13 +50,17 @@ General_variables ,unit,description,lower,median,upper,distribution,variable,sou
 ,number,number of trees per ha,3000,,4000,posnorm,trees_per_ha,
  ,% ,desired coefficient of variation in percent ,0.05,,0.1,tnorm_0_1 ,var_CV,
 ,€ / hen,veterinarian costs,0.39,,0.41,posnorm,veterinary_price,
-,h   ,time to put fertilizer on 10 ha with 3000-4000 trees,20,,40,posnorm,yearly_fertilization_hours,
-,h   ,time to harvest 10 ha with 3000-4000 trees,800,,1200,posnorm,yearly_harvesting_hours,
-,h   ,time to spray10 ha with 3000-4000 trees,6,,9,posnorm,yearly_insectcontrol_hours,
-,h   ,time to mow alleys on 10 ha with 3000-4000 trees,60,,90,posnorm,yearly_mowing_hours,
-,h   ,time to spray 10 ha with 3000-4000 trees,60,,90,posnorm,yearly_scabcontrol_hours,
-,h   ,time to control 10 ha with 3000-4000 trees,25,,100,posnorm,yearly_vole_control_hours,
-,h   ,time to weed alleys on10 ha with 3000-4000 trees,20,,40,posnorm,yearly_weeding_hours,
+,h / ha   ,time to put fertilizer on 1 ha apple trees,1,,2,posnorm,fertilization_hour,KTBL Orchard Tool
+,h / ha   ,time to harvest 1 ha apple trees,27,,31,posnorm,harvest_hour,KTBL Orchard Tool
+,h / ha   ,time to spray 1 ha ,0.45,,1.5,posnorm,spraying_hour,KTBL Orchard Tool
+,h / ha   ,time to mow alleys on 1ha,0.45,,1.5,posnorm,mowing_hour,KTBL Orchard Tool
+,h / ha   ,time to run vole plough,0.5,,0.45,posnorm,vole_hour,KTBL Orchard Tool
+,€ / ha / h,cost of running traktor with spray for 1 ha,18,,22,posnorm,machine_cost_spray,KTBL Orchard Tool
+,€ / ha / h,cost to run vole plough for 1 ha per h,24,,28,posnorm,machine_cost_vole,KTBL Orchard Tool
+,application / year,number of herbicide application per year,1,,3,posnorm,no_herbicide_application,KTBL Orchard Tool
+,application / year,number of insecticide application per year,4,,6,posnorm,no_insecticide_application,KTBL Orchard Tool
+,application / year,number fungicide application per year,10,,15,posnorm,no_fungicide-application,KTBL Orchard Tool
+,application / year,number of combined insecticide and fungicde applications,3,,5,posnorm,no_combined_fungi_insect_appl,
 ,chance,chance of extraordinary apple scabe infestation,0.05,,0.25,tnorm_0_1 ,chance_intense_apple_scab,
 ,share,extra cost of intense apple scab control in proportion to ordinary apple scab control costs,0.2,,0.4,tnorm_0_1 ,proportion_extracost_apple_scab,
 ,chance,chance of extraordinary insect infestation,0.05,,0.25,tnorm_0_1 ,chance_intense_insect_infestation,
