@@ -3,6 +3,7 @@ title: "Chicken in Apple Project"
 author: "Zoe Heuschkel, Lars Caspersen and Miracle Obeng"
 date: "14/07/2021"
 output: html_document
+bibliography: references.bib
 ---
 
 #to justify the text
@@ -19,7 +20,7 @@ knitr::opts_chunk$set(echo = TRUE)
 Would German apple farmers include chicken into their apple plantation in order to deal with the programmed banning of certain agro chemicals especially herbicides in the coming years?
 
 # Introduction
-Chicken in apple plantation is an agroforestry practice. This system is also known as the Silvopoutry system (integration of poultry with crops and/or trees production) has been identified as a sustainable way to increase the productivity of land and to provide a number of ecosystem services and environmental benefits compared to disaggregated agricultural and woodland systems. Organic and free-range poultry have, besides having access to a hen house, access to an outdoor run. In this respect, it is well known that poultry are more inclined to use the range when it is enriched with trees, and that in turn feather picking is reduced when more hens use the range.
+Chicken in apple plantation is an agroforestry practice. This system is also known as the Silvopoutry system (integration of poultry with crops and/or trees production) has been identified as a sustainable way to increase the productivity of land and to provide a number of ecosystem services and environmental benefits compared to disaggregated agricultural and woodland systems. Organic and free-range poultry have, besides having access to a hen house, access to an outdoor run. In this respect, it is well known that poultry are more inclined to use the range when it is enriched with trees, and that in turn feather picking is reduced when more hens use the range [@pedersen2004combined].
 
 
 ## Benefits of the System
@@ -51,6 +52,8 @@ Our stakeholders are the people who will directly or indirectly benefit form the
 
 ## Decision Maker
 Farmers with already established, conventional commercial apple farmer in NW Europe. Farmers are key decision makers because of the Net Present Value (NPV) calculation in the model. This is a variable which is more important to the producers (farmer).
+
+## Input table
 
 # Conceptual Model
 
